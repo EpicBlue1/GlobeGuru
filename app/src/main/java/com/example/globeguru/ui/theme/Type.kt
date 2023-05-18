@@ -43,11 +43,10 @@ val Typography = Typography(
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
-
     titleMedium = TextStyle(
         fontFamily = CenturyGothic,
         fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
+        fontSize = 24.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     )
