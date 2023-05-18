@@ -62,12 +62,12 @@ fun LoginScreen(
     Column(modifier = Modifier
         .fillMaxSize()
         .background(appDarkGray), horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(modifier = Modifier
+        Column(modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(220.dp)
             .background(color = appLightGray),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround) {
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally) {
 
                 Image(modifier = Modifier.padding(10.dp)
     ,               painter = painterResource(id = R.drawable.logo_android),
@@ -75,73 +75,84 @@ fun LoginScreen(
 
                 Text(modifier = Modifier.padding(10.dp), text = "Welcome Back!", style = MaterialTheme.typography.titleLarge, color = appWhite)
         }
-        Column(modifier = Modifier.padding(35.dp)) {
-            OutlinedTextField(
-                value = email,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    textColor = Color.White,
-                    cursorColor = Color.Black
-                ),
-                onValueChange = {email = it},
-                placeholder = {Text(text = "Email")},
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth()
-                    .drawBehind {
-                        drawLine(
-                            color = appBlue,
-                            start = Offset(0f, size.height),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = 2.dp.toPx()
-                        )
+        Column(modifier = Modifier
+            .padding(30.dp)
+            .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween) {
+
+
+            Column() {
+                OutlinedTextField(
+                    value = email,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        textColor = Color.White,
+                        cursorColor = Color.Black
+                    ),
+                    onValueChange = {email = it},
+                    placeholder = {Text(text = "Email")},
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                        .drawBehind {
+                            drawLine(
+                                color = appBlue,
+                                start = Offset(0f, size.height),
+                                end = Offset(size.width, size.height),
+                                strokeWidth = 2.dp.toPx()
+                            )
+                        }
+                        .padding(0.dp)
+                )
+
+                OutlinedTextField(
+                    value = email,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        textColor = Color.White,
+                        cursorColor = Color.Black
+                    ),
+                    onValueChange = {password = it},
+                    placeholder = {Text(text = "Password")},
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                        .drawBehind {
+                            drawLine(
+                                color = appBlue,
+                                start = Offset(0f, size.height),
+                                end = Offset(size.width, size.height),
+                                strokeWidth = 2.dp.toPx()
+                            )
+                        }
+                        .padding(0.dp)
+                )
+
+                Row(modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Need an account?", color = appWhite, style = MaterialTheme.typography.bodyMedium)
+                    TextButton(onClick = {}) {
+                        Text(text = "Register", color = appBlue, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                     }
-                    .padding(0.dp)
-
-            )
-
-            OutlinedTextField(
-                value = email,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    textColor = Color.White,
-                    cursorColor = Color.Black
-                ),
-                onValueChange = {password = it},
-                placeholder = {Text(text = "Password")},
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth()
-                    .drawBehind {
-                        drawLine(
-                            color = appBlue,
-                            start = Offset(0f, size.height),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = 2.dp.toPx()
-                        )
-                    }
-                    .padding(0.dp)
-            )
-
-            Row(modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Need an account?", color = appWhite, style = MaterialTheme.typography.bodyMedium)
-                TextButton(onClick = {}) {
-                    Text(text = "Register", color = appBlue, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                 }
             }
 
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp),
+
+
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = SpaceBetween) {
                 Button(
-                    modifier = Modifier.width(150.dp),
+                    modifier = Modifier.width(145.dp),
                     onClick = { /*TODO*/ },
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(
@@ -161,7 +172,7 @@ fun LoginScreen(
                 }
 
                 Button(
-                    modifier = Modifier.width(150.dp),
+                    modifier = Modifier.width(145.dp),
                     onClick = { /*TODO*/ },
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(
