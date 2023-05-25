@@ -6,12 +6,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.globeguru.ViewModels.AuthViewModel
+import com.example.globeguru.screens.ConversationScreen
 import com.example.globeguru.screens.LoginScreen
 import com.example.globeguru.screens.RegisterScreen
 
 enum class AuthRoutes {
     Login,
-    Register
+    Register,
 }
 
 enum class Routes {
@@ -24,20 +26,27 @@ enum class Routes {
 
 @Composable
 fun Navigation(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    authViewModel: AuthViewModel
 ){
-    NavHost(navController = navController, startDestination = AuthRoutes.Login.name){
+    val startingScreen = if(authViewModel.hashUser){
+        Routes.Conversations.name
+    } else {
+        AuthRoutes.Login.name
+    }
+    NavHost(navController = navController, startDestination = startingScreen){
 
         composable(route = AuthRoutes.Login.name){
             LoginScreen(navToRegister = {
                 navController.navigate(AuthRoutes.Register.name){
-                    launchSingleTop = true
-                    popUpTo(route = AuthRoutes.Login.name){
-                        inclusive = true
-                    }
+//                    launchSingleTop = true
+//                    popUpTo(route = AuthRoutes.Login.name){
+//                        inclusive = true
+//                    }
                 }
-            })
+            },authViewModel = authViewModel)
         }
+
         composable(route = AuthRoutes.Register.name) {
             RegisterScreen(navToLogin = {
                 navController.navigate(AuthRoutes.Login.name) {
@@ -47,6 +56,9 @@ fun Navigation(
                     }
                 }
             })
+        }
+        composable(route = Routes.Conversations.name){
+            ConversationScreen()
         }
     }
 }

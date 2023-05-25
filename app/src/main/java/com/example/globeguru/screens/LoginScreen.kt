@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.globeguru.R
+import com.example.globeguru.ViewModels.AuthViewModel
 import com.example.globeguru.ui.theme.CenturyGothic
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.QuickSand
@@ -54,11 +56,18 @@ import com.example.globeguru.ui.theme.appWhite
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    authViewModel: AuthViewModel? = null,
     modifier: Modifier = Modifier,
     navToRegister:()-> Unit
 ){
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    //get values from viewModel
+    val uathUiState = authViewModel?.authUiState
+    val error = uathUiState?.errorMessage != null
+    val context = LocalContext.current
+
+
+//    var email by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -76,6 +85,11 @@ fun LoginScreen(
 
                 Text(modifier = Modifier.padding(10.dp), text = "Heya User!", style = MaterialTheme.typography.titleLarge, color = appWhite)
         }
+
+        if(error){
+            Text(text = uathUiState?.errorMessage.toString(), color = Color.Red)
+        }
+
         Column(modifier = Modifier
             .padding(30.dp)
             .fillMaxSize(),
@@ -84,14 +98,14 @@ fun LoginScreen(
 
             Column() {
                 OutlinedTextField(
-                    value = email,
+                    value = uathUiState?.loginEmail ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
                         textColor = Color.White,
                         cursorColor = Color.Black
                     ),
-                    onValueChange = {email = it},
+                    onValueChange = {authViewModel?.handleStateChanges("loginEmail", it)},
                     placeholder = {Text(text = "Email")},
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier
@@ -109,14 +123,14 @@ fun LoginScreen(
                 )
 
                 OutlinedTextField(
-                    value = email,
+                    value = uathUiState?.loginPassword ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
                         textColor = Color.White,
                         cursorColor = Color.Black
                     ),
-                    onValueChange = {password = it},
+                    onValueChange = {authViewModel?.handleStateChanges("loginPassword", it)},
                     placeholder = {Text(text = "Password")},
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier
@@ -174,7 +188,7 @@ fun LoginScreen(
 
                 Button(
                     modifier = Modifier.width(145.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = { authViewModel?.loginUser(context) },
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = appBlue,

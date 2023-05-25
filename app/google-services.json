@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "193646080178",
+    "project_id": "globeguru-d56ae",
+    "storage_bucket": "globeguru-d56ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193646080178:android:dae0237f185a2bdc6e19ab",
+        "android_client_info": {
+          "package_name": "com.example.globeguru"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193646080178-tms2bl199m1u55g9eabcln2kdv9h8ftn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrG_3jhGxp6vltumXXGxfqITjPwgBIz6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193646080178-tms2bl199m1u55g9eabcln2kdv9h8ftn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

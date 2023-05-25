@@ -10,6 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.globeguru.ViewModels.AuthViewModel
+import com.example.globeguru.screens.ConversationScreen
 import com.example.globeguru.screens.LoginScreen
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 
@@ -17,6 +20,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            val authViewModel: AuthViewModel = viewModel(modelClass = AuthViewModel::class.java)
+
+
             GlobeGuruTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -24,7 +31,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 //                    Greeting("Android")
-                    Navigation()
+                    Navigation(authViewModel = authViewModel)
+//                    ConversationScreen()
                 }
             }
         }
