@@ -16,7 +16,8 @@ class AuthViewModel(
 ): ViewModel() {
 
     val currentUser = authRepos.currentUser
-    val hashUser: Boolean = authRepos.hasUser()
+    val hashUser: Boolean
+        get() = authRepos.hasUser()
 
     var authUiState by mutableStateOf(AuthUiState())
     private set
@@ -31,6 +32,8 @@ class AuthViewModel(
             authUiState = authUiState.copy(registerUsername = value)
         } else if(target == "registerPassword"){
             authUiState = authUiState.copy(registerPassword = value)
+        } else if(target == "registerConPassword"){
+            authUiState = authUiState.copy(registerConPassword = value)
         } else if(target == "registerEmail"){
             authUiState = authUiState.copy(registerEmail = value)
         } else if(target == "registerCity"){
@@ -41,6 +44,7 @@ class AuthViewModel(
     }
 
     fun createNewUser(context: Context)= viewModelScope.launch {
+        authUiState = authUiState.copy(errorMessage = "")
         try {
             if(authUiState.registerUsername.isBlank() || authUiState.registerEmail.isBlank() || authUiState.registerPassword.isBlank()){
                 authUiState = authUiState.copy(errorMessage = "Please fill in all the fields")
@@ -64,6 +68,7 @@ class AuthViewModel(
                         Log.d("Register failed: ", "Something went wrong")
                     Toast.makeText(context, "Registration Failed", Toast.LENGTH_SHORT).show()
                     authUiState = authUiState.copy(authSuccess = false)
+                    authUiState = authUiState.copy(errorMessage = "Invalid credentials")
                     }
                 }
             }
@@ -76,6 +81,7 @@ class AuthViewModel(
     }
 
     fun loginUser(context: Context)= viewModelScope.launch {
+        authUiState = authUiState.copy(errorMessage = "")
         try {
             if(authUiState.loginEmail.isBlank() || authUiState.loginPassword.isBlank()){
                 authUiState = authUiState.copy(errorMessage = "Please fill in all the fields")
@@ -99,11 +105,12 @@ class AuthViewModel(
                     Log.d("Login failed: ", "Something went wrong")
                     Toast.makeText(context, "login Failed", Toast.LENGTH_SHORT).show()
                     authUiState = authUiState.copy(authSuccess = false)
+                    authUiState = authUiState.copy(errorMessage = "Invalid credentials")
                 }
                 }
             }
         } catch (e:Exception){
-            Log.d("Error Loging in: ", e.localizedMessage)
+            Log.d("Error Logging in: ", e.localizedMessage)
             e.printStackTrace()
         } finally {
             authUiState = authUiState.copy(isLoading = false)
@@ -123,6 +130,7 @@ data class AuthUiState(
     //state values for register
     val registerUsername: String = "",
     val registerPassword: String = "",
+    val registerConPassword: String = "",
     val registerEmail: String = "",
     val registerCity: String = "",
     val registerTraveler: String = "false",

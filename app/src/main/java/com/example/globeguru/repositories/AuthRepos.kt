@@ -26,7 +26,7 @@ class AuthRepos {
         Firebase.auth
             .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                if(it.isComplete){
+                if(it.isSuccessful){
                     Log.d("Registed User", it.result.user?.uid.toString())
                     it.result.user?.uid?.let { it1 -> createdUser.invoke(it1) }
                 } else {
@@ -45,7 +45,7 @@ class AuthRepos {
         Firebase.auth
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                if(it.isComplete){
+                if(it.isSuccessful){
                     Log.d("Login User", "Success")
                     isComplete.invoke(true)
                 } else {

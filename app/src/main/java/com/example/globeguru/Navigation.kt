@@ -29,7 +29,7 @@ fun Navigation(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel
 ){
-    val startingScreen = if(!authViewModel.hashUser){
+    val startingScreen = if(authViewModel.hashUser){
         Routes.Conversations.name
     } else {
         AuthRoutes.Login.name
@@ -44,7 +44,14 @@ fun Navigation(
 //                        inclusive = true
 //                    }
                 }
-            },authViewModel = authViewModel)
+            },
+                navToHome = {
+                    navController.navigate(Routes.Conversations.name){
+                        launchSingleTop = true
+                        popUpTo(route = AuthRoutes.Login.name)
+                    }
+                },
+                authViewModel = authViewModel)
         }
 
         composable(route = AuthRoutes.Register.name) {
@@ -55,7 +62,13 @@ fun Navigation(
                         inclusive = true
                     }
                 }
-            })
+            },   navToHome = {
+                navController.navigate(Routes.Conversations.name){
+                    launchSingleTop = true
+                    popUpTo(route = AuthRoutes.Register.name)
+                }
+            },
+                authViewModel = authViewModel)
         }
         composable(route = Routes.Conversations.name){
             ConversationScreen()

@@ -32,11 +32,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 //                    Greeting("Android")
-//                    Navigation(authViewModel = authViewModel)
+                    Navigation(authViewModel = authViewModel)
 //                    ConversationScreen()
-                    LoginScreen() {
-
-                    }
+//                    LoginScreen() {
+//
+//                    }
                 }
             }
         }
