@@ -1,5 +1,6 @@
 package com.example.globeguru.composables
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,6 +40,9 @@ import com.example.globeguru.ui.theme.appDarkGray
 import com.example.globeguru.ui.theme.appLightGray
 import com.example.globeguru.ui.theme.appWhite
 import com.example.globeguru.ui.theme.semGreen
+import me.nikhilchaudhari.library.NeuInsets
+import me.nikhilchaudhari.library.neumorphic
+import me.nikhilchaudhari.library.shapes.Punched
 
 @Composable
 fun ConversationCard(

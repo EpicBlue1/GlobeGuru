@@ -29,7 +29,7 @@ fun Navigation(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel
 ){
-    val startingScreen = if(authViewModel.hashUser){
+    val startingScreen = if(!authViewModel.hashUser){
         Routes.Conversations.name
     } else {
         AuthRoutes.Login.name

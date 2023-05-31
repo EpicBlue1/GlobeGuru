@@ -1,5 +1,6 @@
 package com.example.globeguru.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +18,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -33,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,8 +48,18 @@ import com.example.globeguru.R
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appBlue
 import com.example.globeguru.ui.theme.appDarkGray
+import com.example.globeguru.ui.theme.appDarkerGray
 import com.example.globeguru.ui.theme.appLightGray
+import com.example.globeguru.ui.theme.appNewBlue
 import com.example.globeguru.ui.theme.appWhite
+import com.gandiva.neumorphic.LightSource
+import com.gandiva.neumorphic.neu
+import com.gandiva.neumorphic.shape.CornerShape
+import com.gandiva.neumorphic.shape.Flat
+import com.gandiva.neumorphic.shape.Pressed
+import com.gandiva.neumorphic.shape.RoundedCorner
+import me.nikhilchaudhari.library.NeuInsets
+import me.nikhilchaudhari.library.neumorphic
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,26 +70,42 @@ fun RegisterScreen(
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
-    var traveller by remember { mutableStateOf("") }
+    var traveller by remember { mutableStateOf(false) }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 
     Column(modifier = Modifier
         .fillMaxSize()
         .background(appDarkGray), horizontalAlignment = Alignment.CenterHorizontally) {
         Column(modifier = Modifier
             .fillMaxWidth()
-            .background(color = appLightGray),
+            .padding(top = 30.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
 
+            Card(modifier= Modifier
+                .background(color = appDarkGray)
+                .neu(
+                    lightShadowColor = appLightGray,
+                    darkShadowColor = appDarkerGray,
+                    shadowElevation = 6.dp,
+                    lightSource = LightSource.LEFT_TOP,
+                    shape = Flat(defaultCornerShape),
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = appLightGray,
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2. dp),
+            ) {
                 Image(modifier = Modifier
                     .padding(10.dp)
                     .height(80.dp)
-    ,               painter = painterResource(id = R.drawable.add_icon),
+                    ,painter = painterResource(id = R.drawable.add_icon),
                     contentDescription = "add icon")
+            }
+            Text(modifier = Modifier.padding(20.dp), text = "Upload Profile", style = MaterialTheme.typography.titleMedium, color = appWhite)
 
-                Text(modifier = Modifier.padding(10.dp), text = "Upload Profile", style = MaterialTheme.typography.titleMedium, color = appWhite)
         }
         Column(modifier = Modifier
             .padding(30.dp)
@@ -89,21 +121,19 @@ fun RegisterScreen(
                         textColor = Color.White,
                         cursorColor = Color.Black
                     ),
-                    onValueChange = {email = it},
+                    onValueChange = {name = it},
                     placeholder = {Text(text = "Name and Surname")},
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
-                        .drawBehind {
-                            drawLine(
-                                color = appBlue,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = 2.dp.toPx()
-                            )
-                        }
-                        .padding(0.dp)
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 6.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Pressed(RoundedCorner(10.dp)),
+                        )
                 )
 
                 OutlinedTextField(
@@ -120,15 +150,13 @@ fun RegisterScreen(
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
-                        .drawBehind {
-                            drawLine(
-                                color = appBlue,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = 2.dp.toPx()
-                            )
-                        }
-                        .padding(0.dp)
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 6.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Pressed(RoundedCorner(10.dp)),
+                        )
                 )
 
                 OutlinedTextField(
@@ -145,16 +173,25 @@ fun RegisterScreen(
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
-                        .drawBehind {
-                            drawLine(
-                                color = appBlue,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = 2.dp.toPx()
-                            )
-                        }
-                        .padding(0.dp)
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 6.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Pressed(RoundedCorner(10.dp)),
+                        )
                     )
+
+                Row(modifier = Modifier.height(60.dp).fillMaxWidth().padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = "Traveller?", color = appWhite)
+                    Switch(checked = traveller, onCheckedChange = {traveller = it},
+                        colors = SwitchDefaults.colors(
+                        checkedThumbColor = appBlue,
+                        uncheckedThumbColor = appDarkGray,
+                        checkedTrackColor = appDarkerGray,
+                        uncheckedTrackColor = appLightGray,
+                    ))
+                }
 
 
 
@@ -172,15 +209,13 @@ fun RegisterScreen(
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
-                        .drawBehind {
-                            drawLine(
-                                color = appBlue,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = 2.dp.toPx()
-                            )
-                        }
-                        .padding(0.dp)
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 6.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Pressed(RoundedCorner(10.dp)),
+                        )
                 )
 
                 OutlinedTextField(
@@ -197,15 +232,13 @@ fun RegisterScreen(
                     modifier = Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
-                        .drawBehind {
-                            drawLine(
-                                color = appBlue,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = 2.dp.toPx()
-                            )
-                        }
-                        .padding(0.dp)
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 6.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Pressed(RoundedCorner(10.dp)),
+                        )
                 )
 
                 Row(modifier = Modifier.fillMaxWidth(),
@@ -223,36 +256,35 @@ fun RegisterScreen(
                 .fillMaxWidth()
                 .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = SpaceBetween) {
+                horizontalArrangement = Arrangement.Center) {
                 Button(
-                    modifier = Modifier.width(145.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 6.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Flat(defaultCornerShape)
+                        ),
                     onClick = { /*TODO*/ },
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = appWhite,
-                        contentColor = appDarkGray)
+                        containerColor = appDarkGray)
                 ) {
-                    Row(modifier = Modifier,
+                    Row(modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        Image(modifier = Modifier.height(20.dp),
-                            painter = painterResource(id = R.drawable.google_logo),
+                        Image(modifier = Modifier
+                            .height(32.dp)
+                            .width(32.dp)
+                            .padding(top = 2.dp),
+                            contentScale = ContentScale.FillHeight,
+                            painter = painterResource(id = R.drawable.userplus),
                             contentDescription = "Logo")
-                        Spacer(modifier = Modifier.size(20.dp))
-                        Text(text = "Sign Up")
+                        Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Sign Up")
                     }
-                }
-
-                Button(
-                    modifier = Modifier.width(145.dp),
-                    onClick = {  },
-                    shape = RoundedCornerShape(20),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = appBlue,
-                        contentColor = appWhite)
-                ) {
-                    Text(text = "Sign Up")
                 }
             }
         }
