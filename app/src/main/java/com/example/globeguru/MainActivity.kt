@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 //                    Greeting("Android")
 //                    Navigation(authViewModel = authViewModel)
 //                    ConversationScreen()
-                    RegisterScreen() {
+                    LoginScreen() {
 
                     }
                 }
