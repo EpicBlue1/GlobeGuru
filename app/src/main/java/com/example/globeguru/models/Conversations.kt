@@ -7,6 +7,7 @@ data class Conversations(
     val name: String = "",
     val image:  String = "",
     val countryImage:  String = "",
+    val countryOrigin: String = "",
     val totalMessages: Int = 0,
     val modifierCon: Modifier = Modifier,
 )

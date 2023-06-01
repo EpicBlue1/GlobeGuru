@@ -9,10 +9,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.globeguru.repositories.AuthRepos
+import com.example.globeguru.repositories.FireStoreRepo
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val authRepos: AuthRepos = AuthRepos()
+    private val authRepos: AuthRepos = AuthRepos(),
 ): ViewModel() {
 
     val currentUser = authRepos.currentUser
@@ -57,15 +58,25 @@ class AuthViewModel(
                     authUiState.registerPassword
                 ) {
                     userId -> if(userId.isNotBlank()){
-                        //we get a userId
-                        Log.d("Register Success: ", userId)
+                        FireStoreRepo().createUserInDb(uid = userId, username = authUiState.registerUsername, email = authUiState.registerEmail, traveller = authUiState.registerTraveler.toBoolean()){
+                            if(it){
+                                Log.d("Register Success: ", userId)
 
-                    Toast.makeText(context, "Registration Completed", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Registration Completed", Toast.LENGTH_SHORT).show()
 
-                    authUiState = authUiState.copy(authSuccess = true)
+                                authUiState = authUiState.copy(authSuccess = true)
+                            } else {
+                                Log.d("Something went wrong: ", userId)
+
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+
+                                authUiState = authUiState.copy(authSuccess = false)
+                            }
+                        }
+
                 } else {
                     //register failed
-                        Log.d("Register failed: ", "Something went wrong")
+                    Log.d("Register failed: ", "Something went wrong")
                     Toast.makeText(context, "Registration Failed", Toast.LENGTH_SHORT).show()
                     authUiState = authUiState.copy(authSuccess = false)
                     authUiState = authUiState.copy(errorMessage = "Invalid credentials")

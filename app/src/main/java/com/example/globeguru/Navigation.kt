@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.globeguru.ViewModels.AuthViewModel
 import com.example.globeguru.screens.ConversationScreen
 import com.example.globeguru.screens.LoginScreen
+import com.example.globeguru.screens.ProfileScreen
 import com.example.globeguru.screens.RegisterScreen
 
 enum class AuthRoutes {
@@ -71,7 +72,25 @@ fun Navigation(
                 authViewModel = authViewModel)
         }
         composable(route = Routes.Conversations.name){
-            ConversationScreen()
+            ConversationScreen(navToProfile = {
+                navController.navigate(Routes.Profile.name){
+                    launchSingleTop = true
+                }
+            })
+        }
+
+        composable(route = Routes.Profile.name){
+            ProfileScreen(navSignOut = {
+            navController.navigate(AuthRoutes.Login.name){
+                launchSingleTop = true
+                popUpTo(route = Routes.Conversations.name)
+            } }, navBack = {
+                    navController.navigate(Routes.Conversations.name){
+                        launchSingleTop = true
+                        popUpTo(route = Routes.Conversations.name)
+                    }
+                }
+            )
         }
     }
 }
