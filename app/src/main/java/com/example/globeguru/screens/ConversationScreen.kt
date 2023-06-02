@@ -3,8 +3,10 @@ package com.example.globeguru.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,16 +23,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModel
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ConvoViewModel
@@ -38,8 +46,13 @@ import com.example.globeguru.composables.ConversationCard
 import com.example.globeguru.models.Conversations
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appDarkGray
+import com.example.globeguru.ui.theme.appDarkerGray
 import com.example.globeguru.ui.theme.appLightGray
 import com.example.globeguru.ui.theme.appWhite
+import com.gandiva.neumorphic.LightSource
+import com.gandiva.neumorphic.neu
+import com.gandiva.neumorphic.shape.Flat
+import com.gandiva.neumorphic.shape.RoundedCorner
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -53,16 +66,41 @@ fun ConversationScreen(
         .background(appDarkGray), horizontalAlignment = Alignment.CenterHorizontally) {
         Row(modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .background(color = appLightGray),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            .height(100.dp),
+            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceAround) {
             Image(modifier = Modifier
+                .height(55.dp)
+                .width(55.dp)
                 .clickable { navToProfile.invoke() }
-                .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
-                .height(80.dp)
-                ,painter = painterResource(id = R.drawable.logo_android),
-                contentDescription = "add icon")
-            Text(modifier = Modifier.padding(30.dp), text = "Connections", style = MaterialTheme.typography.titleMedium, color = appWhite)
+                .neu(
+                    lightShadowColor = appLightGray,
+                    darkShadowColor = appDarkerGray,
+                    shadowElevation = 4.dp,
+                    lightSource = LightSource.LEFT_TOP,
+                    shape = Flat(RoundedCorner(100.dp))
+                )
+                .clip(CircleShape)
+                ,contentScale = ContentScale.Crop
+                ,painter = painterResource(id = R.drawable.profiletemp),
+                contentDescription = "dd icona")
+            Box(modifier = Modifier.width(200.dp)
+                .neu(
+                    lightShadowColor = appLightGray,
+                    darkShadowColor = appDarkerGray,
+                    shadowElevation = 4.dp,
+                    lightSource = LightSource.LEFT_TOP,
+                    shape = Flat(RoundedCorner(10.dp))
+                )
+                .clip(RoundedCornerShape(10.dp))
+                .background(color = appLightGray)
+                .height(55.dp),
+                contentAlignment = Alignment.Center){
+                Text(modifier = Modifier.zIndex(1f),
+                    textAlign = TextAlign.Center,
+                    text = "Connections",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = appWhite)
+            }
         }
 
         LazyVerticalStaggeredGrid(

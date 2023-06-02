@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,14 +78,22 @@ fun ProfileScreen(
                 ){
                     Image(modifier = Modifier
                         .height(50.dp)
-                        ,painter = painterResource(id = R.drawable.logo_android),
-                        contentDescription = "add icon")
+                        ,painter = painterResource(id = R.drawable.arrow_left),
+                        contentDescription = "back")
                 }
             }
             Image(modifier = Modifier
-                .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
-                .height(85.dp)
-                ,painter = painterResource(id = R.drawable.logo_android),
+                .height(110.dp)
+                .width(110.dp)
+                .neu(
+                lightShadowColor = appLightGray,
+                darkShadowColor = appDarkerGray,
+                shadowElevation = 6.dp,
+                lightSource = LightSource.LEFT_TOP,
+                shape = Flat(RoundedCorner(100.dp))
+            ).clip(CircleShape)
+                ,contentScale = ContentScale.Crop
+                ,painter = painterResource(id = R.drawable.profiletemp),
                 contentDescription = "add icon")
             Text(modifier = Modifier.padding(10.dp), text = "Username", style = MaterialTheme.typography.titleLarge, color = appWhite)
             Text(modifier = Modifier.padding(10.dp), text = "Email", style = MaterialTheme.typography.titleSmall, color = appWhite)

@@ -198,7 +198,7 @@ fun LoginScreen(
                             contentScale = ContentScale.FillHeight,
                             painter = painterResource(id = R.drawable.logo_android),
                             contentDescription = "Logo")
-                        Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Sign Up")
+                        Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Log In")
                     }
                 }
             }

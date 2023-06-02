@@ -113,7 +113,7 @@ class AuthViewModel(
                     authUiState = authUiState.copy(authSuccess = true)
                 } else {
                     //register failed
-                    Log.d("Login failed: ", "Something went wrong")
+                    Log.d("AAA Login failed: ", "Something went wrong")
                     Toast.makeText(context, "login Failed", Toast.LENGTH_SHORT).show()
                     authUiState = authUiState.copy(authSuccess = false)
                     authUiState = authUiState.copy(errorMessage = "Invalid credentials")

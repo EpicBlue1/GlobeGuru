@@ -69,7 +69,7 @@ fun RegisterScreen(
 
     val authUiState: AuthUiState? = authViewModel?.authUiState
 
-    val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
+    val defaultCornerShape: CornerShape = RoundedCorner(10.dp)
     val context = LocalContext.current
 
     Column(
