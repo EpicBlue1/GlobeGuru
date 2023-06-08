@@ -16,17 +16,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.globeguru.R
@@ -42,8 +48,11 @@ import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.CornerShape
 import com.gandiva.neumorphic.shape.Flat
+import com.gandiva.neumorphic.shape.Pressed
 import com.gandiva.neumorphic.shape.RoundedCorner
+import androidx.compose.runtime.mutableStateOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel? = null,
@@ -63,7 +72,9 @@ fun ProfileScreen(
             .height(320.dp)
             .background(color = appDarkGray),
             verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)) {
                 Box(modifier = Modifier
                     .clickable { navBack.invoke() }
                     .neu(
@@ -74,7 +85,7 @@ fun ProfileScreen(
                         shape = Flat(defaultCornerShape)
                     )
 //                    .background(color = appLightGray)
-                    .border(width = 2.dp, color = appLightGray, shape = RoundedCornerShape (20))
+                    .border(width = 2.dp, color = appLightGray, shape = RoundedCornerShape(20))
                 ){
                     Image(modifier = Modifier
                         .height(50.dp)
@@ -86,12 +97,13 @@ fun ProfileScreen(
                 .height(110.dp)
                 .width(110.dp)
                 .neu(
-                lightShadowColor = appLightGray,
-                darkShadowColor = appDarkerGray,
-                shadowElevation = 6.dp,
-                lightSource = LightSource.LEFT_TOP,
-                shape = Flat(RoundedCorner(100.dp))
-            ).clip(CircleShape)
+                    lightShadowColor = appLightGray,
+                    darkShadowColor = appDarkerGray,
+                    shadowElevation = 6.dp,
+                    lightSource = LightSource.LEFT_TOP,
+                    shape = Flat(RoundedCorner(100.dp))
+                )
+                .clip(CircleShape)
                 ,contentScale = ContentScale.Crop
                 ,painter = painterResource(id = R.drawable.profiletemp),
                 contentDescription = "add icon")
@@ -99,12 +111,40 @@ fun ProfileScreen(
             Text(modifier = Modifier.padding(10.dp), text = "Email", style = MaterialTheme.typography.titleSmall, color = appWhite)
         }
 
+        Column(modifier = Modifier.padding(40.dp)) {
+
+            OutlinedTextField(
+                value = "",
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    textColor = Color.White,
+                    cursorColor = Color.Black
+                ),
+                onValueChange = {""},
+                placeholder = {Text(text = "Update Profile")},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
+                    .neu(
+                        lightShadowColor = appLightGray,
+                        darkShadowColor = appDarkerGray,
+                        shadowElevation = 6.dp,
+                        lightSource = LightSource.LEFT_TOP,
+                        shape = Pressed(RoundedCorner(10.dp)),
+                    )
+            )
+        }
+
+
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(40.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -118,7 +158,7 @@ fun ProfileScreen(
                 onClick = { AuthRepos().signOut(); navSignOut.invoke() },
                 shape = RoundedCornerShape(20),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = appNewBlue)
+                    containerColor = appDarkerGray)
             ) {
                 Row(modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,

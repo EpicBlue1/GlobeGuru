@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.globeguru.ViewModels.AuthViewModel
+import com.example.globeguru.screens.ChatScreen
 import com.example.globeguru.screens.ConversationScreen
 import com.example.globeguru.screens.LoginScreen
 import com.example.globeguru.screens.RegisterScreen
@@ -32,7 +33,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 //                    Greeting("Android")
-                    Navigation(authViewModel = authViewModel)
+//                    Navigation(authViewModel = authViewModel)
+                    ChatScreen()
 //                    ConversationScreen()
 //                    LoginScreen() {
 //

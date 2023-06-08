@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ConvoViewModel
 import com.example.globeguru.composables.ConversationCard
@@ -57,7 +58,7 @@ import com.gandiva.neumorphic.shape.RoundedCorner
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConversationScreen(
-    viewModel: ConvoViewModel = ConvoViewModel(),
+    viewModel: ConvoViewModel = viewModel(),
     navToProfile: () -> Unit
 ){
     val allChats = viewModel?.chatList ?: listOf<Conversations>()
