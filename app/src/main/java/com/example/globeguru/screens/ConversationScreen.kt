@@ -8,48 +8,43 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ConvoViewModel
-import com.example.globeguru.composables.ConversationCard
 import com.example.globeguru.models.Conversations
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appDarkGray
 import com.example.globeguru.ui.theme.appDarkerGray
 import com.example.globeguru.ui.theme.appLightGray
 import com.example.globeguru.ui.theme.appWhite
+import com.example.globeguru.ui.theme.semGreen
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Flat
@@ -59,9 +54,11 @@ import com.gandiva.neumorphic.shape.RoundedCorner
 @Composable
 fun ConversationScreen(
     viewModel: ConvoViewModel = viewModel(),
-    navToProfile: () -> Unit
+    navToProfile: () -> Unit,
+    onNavToChat: (chatId: String)->Unit,
 ){
     val allChats = viewModel?.chatList ?: listOf<Conversations>()
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(appDarkGray), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -111,12 +108,54 @@ fun ConversationScreen(
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ){
             items(allChats){chat ->
-                ConversationCard(Conversations(
-                    name= chat.name,
-                    image= chat.image,
-                    totalMessages = chat.totalMessages,
-                    countryImage = chat.countryImage
-                ))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .border(
+                            width = 4.dp,
+                            color = appLightGray,
+                            shape = RoundedCornerShape(5.dp)
+                        )
+                        .clickable { onNavToChat.invoke(chat.id) }
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = LocalContext.current)
+                            .data(chat.image)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = chat.name,
+                        modifier = Modifier
+                            .fillMaxWidth().padding(3.dp)
+                            .height(194.dp),
+                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                        contentScale = ContentScale.FillHeight)
+                    Box(modifier = Modifier
+                        .clip(CircleShape)
+                        .background(color = semGreen)
+                        .padding(1.dp)
+                        .width(25.dp)
+                        .height(25.dp)
+                    ) {
+                        Text(text = chat.totalMessages.toString(), modifier = Modifier.fillMaxWidth().zIndex(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+                    }
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = LocalContext.current)
+                            .data(chat.countryImage)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = chat.name,
+                        modifier = Modifier.align(alignment = Alignment.BottomEnd)
+                            .clip(CircleShape)
+                            .border(
+                                width = 2.dp,
+                                color = appLightGray,
+                                shape = CircleShape)
+                            .width(27.dp)
+                            .height(27.dp),
+                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                    )
+                }
             }
         }
     }
@@ -126,6 +165,6 @@ fun ConversationScreen(
 @Composable
 fun ConversationScreenPreview(){
     GlobeGuruTheme {
-        ConversationScreen(navToProfile = {})
+        ConversationScreen(navToProfile={}, onNavToChat = {})
     }
 }

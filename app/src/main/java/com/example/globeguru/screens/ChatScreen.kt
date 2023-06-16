@@ -1,5 +1,6 @@
 package com.example.globeguru.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +27,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.globeguru.R
+import com.example.globeguru.ViewModels.ChatViewModel
+import com.example.globeguru.models.Conversations
 import com.example.globeguru.models.Message
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appBlue
@@ -54,14 +65,44 @@ val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(modifier: Modifier = Modifier){
+fun ChatScreen(modifier: Modifier = Modifier,
+               chatId: String?,
+               viewModel: ChatViewModel = androidx.lifecycle.viewmodel.compose.viewModel())
+    {
 
-    val dummyData = listOf<Message>(
-        Message( message = "Jy is n eier"),
-        Message( message = "Nee Jy is n eier"),
-        Message( message = "Jy is n eier"),
-        Message( message = "Jy is n eier"),
+        var newMessage: String by remember {
+            mutableStateOf("")
+        }
+
+    val currentUserFrom = "Armand"
+
+    val dummyData = listOf(
+        Message( message = "Jy is n eier. Punt", fromUser = "Armand"),
+        Message( message = "Nee Jy is n eier", fromUser = "Lollos"),
+        Message( message = "Jy is n eier", fromUser = "Armand"),
+        Message( message = "Jy is n eier", fromUser = "Lollos"),
+        Message( message = "Jy is n eier", fromUser = "Armand"),
+        Message( message = "Nee Jy is n eier", fromUser = "Lollos"),
+        Message( message = "Jy is n eier", fromUser = "Armand"),
+        Message( message = "Jy is n eier", fromUser = "Lollos"),
+        Message( message = "Nee Jy is n eier", fromUser = "Lollos"),
+        Message( message = "Jy is n eier", fromUser = "Armand"),
+        Message( message = "Jy is n eier", fromUser = "Lollos"),
     )
+
+        val isChatIdBlank = chatId.isNullOrBlank()
+
+        LaunchedEffect(key1 = Unit){
+            if(!isChatIdBlank){
+                Log.d("AA Receive Messages", "Umm")
+                viewModel.realTimeMessages(chatId ?: "")
+            } else {
+                Log.d("AAA chat id error", chatId.toString())
+            }
+        }
+
+        val allMessages = viewModel?.messageList ?: listOf<Message>()
+        Log.d("LOL", allMessages.toList().toString())
 
     Column(modifier = Modifier
 
@@ -69,9 +110,9 @@ fun ChatScreen(modifier: Modifier = Modifier){
 
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .height(70.dp)
                 .background(appDarkGray)
-                .padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically ) {
+                .padding(10.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically ) {
 
                 Box(modifier = Modifier
                     .clickable { "navBack.invoke()" }
@@ -91,7 +132,7 @@ fun ChatScreen(modifier: Modifier = Modifier){
                         contentDescription = "back")
                 }
 
-                Text(text = "Reinhardt de Beer", modifier = Modifier, style = MaterialTheme.typography.titleMedium, color = appWhite)
+                Text(text = chatId ?: "", modifier = Modifier, style = MaterialTheme.typography.titleMedium, color = appWhite)
 
                 Image(modifier = Modifier
                     .height(50.dp)
@@ -108,12 +149,17 @@ fun ChatScreen(modifier: Modifier = Modifier){
                     ,painter = painterResource(id = R.drawable.profiletemp),
                     contentDescription = "add icon")
             }
-            Column(modifier = Modifier
+            LazyColumn(modifier = Modifier
                 .weight(2f)
                 .padding(end = 10.dp, start = 10.dp)
-                .verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.Bottom){
-                leftChat(recMessage = dummyData[0])
-                rightChat(message = dummyData[1])
+                , reverseLayout = true){
+                items(allMessages){ message ->
+                    if(viewModel.currentUserId == message.fromUser){
+                        RightChat(message)
+                    } else {
+                        LeftChat(message)
+                    }
+                }
             }
 
             Row(modifier = Modifier
@@ -124,14 +170,14 @@ fun ChatScreen(modifier: Modifier = Modifier){
                 .padding(10.dp)
                 , horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(
-                    value = "",
+                    value = newMessage,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
                         textColor = Color.White,
                         cursorColor = Color.Black
                     ),
-                    onValueChange = {""},
+                    onValueChange = {newMessage = it},
                     placeholder = {Text(text = "Type a message...")},
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier
@@ -145,8 +191,10 @@ fun ChatScreen(modifier: Modifier = Modifier){
                         )
                 )
                 Box(modifier = Modifier
-                    .clickable { "navBack.invoke()" }
-//                    .background(color = appLightGray)
+                    .clickable {
+                        viewModel.sendNewMessage(newMessage, chatId ?: "")
+                        newMessage = ""
+                    }
                     .border(width = 2.dp, color = appNewBlue, shape = RoundedCornerShape(20))
                 ){
                     Image(modifier = Modifier
@@ -161,7 +209,7 @@ fun ChatScreen(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun leftChat(recMessage: Message){
+fun LeftChat(message: Message){
     Row(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.Bottom) {
         Image(modifier = Modifier
             .height(25.dp)
@@ -183,31 +231,37 @@ fun leftChat(recMessage: Message){
             .clip(shape = RoundedCornerShape(15.dp, 15.dp, 15.dp, 0.dp))
             .background(color = appWhite))
                 {
-                    Text(text = recMessage.message, modifier = Modifier.padding(10.dp))
+                    Text(text = message.message, modifier = Modifier.padding(10.dp), color = appDarkerGray)
                     Text(
-                        text = recMessage.time.toDate().toString(),
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp, end = 20.dp),
+                        text = message.time.toDate().toString(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 5.dp, end = 20.dp),
                         textAlign = TextAlign.End,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall, color = appDarkerGray
                     )
             }
         }
 }
 
 @Composable
-fun rightChat(message: Message){
-    Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End) {
+fun RightChat(message: Message){
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End) {
         Column(modifier = Modifier
             .width(290.dp)
             .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 15.dp))
             .background(color = appBlue))
         {
-            Text(text = message.message, modifier = Modifier.padding(10.dp))
+            Text(text = message.message, modifier = Modifier.padding(10.dp), color = appDarkerGray)
             Text(
                 text = message.time.toDate().toString(),
-                modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp, end = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp, end = 20.dp),
                 textAlign = TextAlign.End,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall, color = appDarkerGray
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
@@ -232,6 +286,6 @@ fun rightChat(message: Message){
 @Composable
 fun ChatScreenPreview(){
     GlobeGuruTheme {
-        ChatScreen()
+        ChatScreen(chatId = "Chat123")
     }
 }

@@ -24,7 +24,7 @@ class ConvoViewModel(
 
     fun getChats() = viewModelScope.launch{
         repo.getAllChats() {
-            data-> if(data != null){
+            data -> if(data != null){
                 for(document in data){
                     _chatList.add(document)
                 }
