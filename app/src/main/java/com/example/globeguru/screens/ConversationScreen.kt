@@ -19,12 +19,15 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -62,47 +65,90 @@ fun ConversationScreen(
     Column(modifier = Modifier
         .fillMaxSize()
         .background(appDarkGray), horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(modifier = Modifier
+        Column(modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceAround) {
-            Image(modifier = Modifier
-                .height(55.dp)
-                .width(55.dp)
-                .clickable { navToProfile.invoke() }
-                .neu(
-                    lightShadowColor = appLightGray,
-                    darkShadowColor = appDarkerGray,
-                    shadowElevation = 4.dp,
-                    lightSource = LightSource.LEFT_TOP,
-                    shape = Flat(RoundedCorner(100.dp))
-                )
-                .clip(CircleShape)
-                ,contentScale = ContentScale.Crop
-                ,painter = painterResource(id = R.drawable.profiletemp),
-                contentDescription = "dd icona")
-            Box(modifier = Modifier.width(200.dp)
-                .neu(
-                    lightShadowColor = appLightGray,
-                    darkShadowColor = appDarkerGray,
-                    shadowElevation = 4.dp,
-                    lightSource = LightSource.LEFT_TOP,
-                    shape = Flat(RoundedCorner(10.dp))
-                )
-                .clip(RoundedCornerShape(10.dp))
-                .background(color = appLightGray)
-                .height(55.dp),
-                contentAlignment = Alignment.Center){
-                Text(modifier = Modifier.zIndex(1f),
-                    textAlign = TextAlign.Center,
-                    text = "Connections",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = appWhite)
+            .padding(top = 10.dp)
+            .height(110.dp),
+//            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceAround
+        verticalArrangement = Arrangement.SpaceAround, horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+//            Text(text = "GlobeGuru", style = MaterialTheme.typography.titleMedium,
+//                color = appWhite)
+            Row(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
+                Image(modifier = Modifier
+                    .height(80.dp)
+                    .width(80.dp)
+                    .clickable { navToProfile.invoke() }
+                    .neu(
+                        lightShadowColor = appLightGray,
+                        darkShadowColor = appDarkerGray,
+                        shadowElevation = 4.dp,
+                        lightSource = LightSource.LEFT_TOP,
+                        shape = Flat(RoundedCorner(100.dp))
+                    )
+                    .clip(CircleShape)
+                    ,contentScale = ContentScale.Crop
+                    ,painter = painterResource(id = R.drawable.profiletemp),
+                    contentDescription = "dd icon")
+                Column(modifier = Modifier
+                    .padding(start = 35.dp, top = 5.dp)
+                    .height(80.dp), verticalArrangement = Arrangement.SpaceBetween) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .neu(
+                                lightShadowColor = appLightGray,
+                                darkShadowColor = appDarkerGray,
+                                shadowElevation = 6.dp,
+                                lightSource = LightSource.LEFT_TOP,
+                                shape = Flat(defaultCornerShape)
+                            ),
+                        onClick = { "" },
+                        shape = RoundedCornerShape(20),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = appDarkGray
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .height(32.dp)
+                                    .width(32.dp)
+                                    .padding(top = 2.dp),
+                                contentScale = ContentScale.FillHeight,
+                                painter = painterResource(id = R.drawable.userplus),
+                                contentDescription = "Logo"
+                            )
+                            Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Add someone")
+                        }
+                    }
+                    Text(modifier = Modifier.fillMaxWidth(), text = "Total Chats: " + allChats.count(), color = appWhite, textAlign = TextAlign.Start)
+                }
+            }
+        }
+        
+        Row(modifier = Modifier.padding(10.dp)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .border(
+                    width = 4.dp,
+                    color = appLightGray,
+                    shape = RoundedCornerShape(5.dp)
+                )) {
+                
             }
         }
 
         LazyVerticalStaggeredGrid(
-            modifier = Modifier.padding(15.dp),
+            modifier = Modifier
+                .padding(15.dp)
+                .fillMaxSize()
+                .weight(2f),
             columns = StaggeredGridCells.Fixed(4),
             verticalItemSpacing = 20.dp,
             horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -126,7 +172,8 @@ fun ConversationScreen(
                             .build(),
                         contentDescription = chat.name,
                         modifier = Modifier
-                            .fillMaxWidth().padding(3.dp)
+                            .fillMaxWidth()
+                            .padding(3.dp)
                             .height(194.dp),
                         placeholder = painterResource(R.drawable.ic_launcher_foreground),
                         contentScale = ContentScale.FillHeight)
@@ -137,7 +184,9 @@ fun ConversationScreen(
                         .width(25.dp)
                         .height(25.dp)
                     ) {
-                        Text(text = chat.totalMessages.toString(), modifier = Modifier.fillMaxWidth().zIndex(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+                        Text(text = chat.totalMessages.toString(), modifier = Modifier
+                            .fillMaxWidth()
+                            .zIndex(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
                     }
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
@@ -145,17 +194,47 @@ fun ConversationScreen(
                             .crossfade(true)
                             .build(),
                         contentDescription = chat.name,
-                        modifier = Modifier.align(alignment = Alignment.BottomEnd)
+                        modifier = Modifier
+                            .align(alignment = Alignment.BottomEnd)
                             .clip(CircleShape)
                             .border(
                                 width = 2.dp,
                                 color = appLightGray,
-                                shape = CircleShape)
+                                shape = CircleShape
+                            )
                             .width(27.dp)
                             .height(27.dp),
                         placeholder = painterResource(R.drawable.ic_launcher_foreground),
                     )
                 }
+            }
+        }
+        Row(modifier = Modifier.height(64.dp).fillMaxWidth().background(color = appDarkerGray), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceAround) {
+            Box(modifier = Modifier.height(45.dp).width(45.dp).clip(shape = RoundedCornerShape(20)).background(color = Color.Transparent)) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(R.drawable.add_icon)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "NonTravel",
+                    modifier = Modifier
+                        .width(44.dp)
+                        .height(44.dp),
+                    placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                )
+            }
+            Box(modifier = Modifier.height(46.dp).width(45.dp).clip(shape = RoundedCornerShape(20)).background(color = appDarkGray)) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(R.drawable.add_icon)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Travel",
+                    modifier = Modifier
+                        .width(44.dp)
+                        .height(44.dp),
+                    placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                )
             }
         }
     }
