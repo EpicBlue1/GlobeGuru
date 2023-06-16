@@ -119,11 +119,11 @@ fun RegisterScreen(
         Column(
             modifier = Modifier
                 .padding(30.dp)
-                .fillMaxSize(),
+                .fillMaxSize().weight(2f),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Column() {
+            Column(modifier = Modifier) {
                 OutlinedTextField(
                     value = authUiState?.registerUsername ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(

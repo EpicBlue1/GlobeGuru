@@ -104,12 +104,12 @@ fun LoginScreen(
 
         Column(modifier = Modifier
             .padding(30.dp)
-            .height(300.dp)
+//            .height(300.dp)
             .fillMaxSize()
-            .fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween) {
+            .weight(2f), verticalArrangement = Arrangement.SpaceBetween
+            ) {
 
-            Column(modifier = Modifier) {
+            Column(modifier = Modifier.height(250.dp), verticalArrangement = Arrangement.SpaceBetween) {
                 OutlinedTextField(
                     value = uathUiState?.loginEmail ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(

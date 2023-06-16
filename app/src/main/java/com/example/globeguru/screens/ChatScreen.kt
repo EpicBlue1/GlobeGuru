@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,22 +74,6 @@ fun ChatScreen(modifier: Modifier = Modifier,
         var newMessage: String by remember {
             mutableStateOf("")
         }
-
-    val currentUserFrom = "Armand"
-
-    val dummyData = listOf(
-        Message( message = "Jy is n eier. Punt", fromUser = "Armand"),
-        Message( message = "Nee Jy is n eier", fromUser = "Lollos"),
-        Message( message = "Jy is n eier", fromUser = "Armand"),
-        Message( message = "Jy is n eier", fromUser = "Lollos"),
-        Message( message = "Jy is n eier", fromUser = "Armand"),
-        Message( message = "Nee Jy is n eier", fromUser = "Lollos"),
-        Message( message = "Jy is n eier", fromUser = "Armand"),
-        Message( message = "Jy is n eier", fromUser = "Lollos"),
-        Message( message = "Nee Jy is n eier", fromUser = "Lollos"),
-        Message( message = "Jy is n eier", fromUser = "Armand"),
-        Message( message = "Jy is n eier", fromUser = "Lollos"),
-    )
 
         val isChatIdBlank = chatId.isNullOrBlank()
 
@@ -230,7 +215,7 @@ fun LeftChat(message: Message){
             .clip(shape = RoundedCornerShape(15.dp, 15.dp, 15.dp, 0.dp))
             .background(color = appWhite))
                 {
-                    Text(text = message.message, modifier = Modifier.padding(10.dp), color = appDarkerGray)
+                    Text(text = message.message, modifier = Modifier.padding(10.dp), color = appDarkerGray, fontWeight = FontWeight.Bold)
                     Text(
                         text = message.time.toDate().toString(),
                         modifier = Modifier
