@@ -68,12 +68,12 @@ class ChatViewModel(
             .collection("chats")
             .document(chatId)
             .collection("messages")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .orderBy("time", Query.Direction.DESCENDING)
             .limit(50)
         
         messageListener = collectionRef.addSnapshotListener { snapshot, e ->
             //stop if error
-            Log.d("AAA listening", "YES!")
+            Log.d("AAA listening", snapshot?.toList().toString())
             if (e != null){
                 Log.d("AAA listener went deaf", e.localizedMessage ?: "")
                 return@addSnapshotListener

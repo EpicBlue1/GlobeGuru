@@ -205,7 +205,6 @@ fun ChatScreen(modifier: Modifier = Modifier,
                 }
             }
     }
-
 }
 
 @Composable

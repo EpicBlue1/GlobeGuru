@@ -1,5 +1,6 @@
 package com.example.globeguru.ViewModels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +29,7 @@ class ConvoViewModel(
                 for(document in data){
                     _chatList.add(document)
                 }
+            Log.d("AA Got chats", data.toString())
             }
         }
     }
