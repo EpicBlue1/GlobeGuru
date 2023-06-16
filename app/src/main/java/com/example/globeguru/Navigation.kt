@@ -105,7 +105,12 @@ fun Navigation(
         composable(route = "${Routes.Chat.name}/{chatId}",
             arguments = listOf(navArgument("chatId"){type = NavType.StringType; defaultValue = "chat123"})
             ){
-            ChatScreen( chatId = it.arguments?.getString("chatId"))
+            ChatScreen( chatId = it.arguments?.getString("chatId"), navBack = {
+                navController.navigate(Routes.Conversations.name){
+                    launchSingleTop = true
+                    popUpTo(route = Routes.Conversations.name)
+                }
+            })
         }
     }
 }

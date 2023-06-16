@@ -68,6 +68,7 @@ val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 @Composable
 fun ChatScreen(modifier: Modifier = Modifier,
                chatId: String?,
+               navBack:()-> Unit,
                viewModel: ChatViewModel = androidx.lifecycle.viewmodel.compose.viewModel())
     {
 
@@ -100,7 +101,7 @@ fun ChatScreen(modifier: Modifier = Modifier,
                 .padding(10.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically ) {
 
                 Box(modifier = Modifier
-                    .clickable { "navBack.invoke()" }
+                    .clickable { navBack.invoke() }
                     .neu(
                         lightShadowColor = appLightGray,
                         darkShadowColor = appDarkerGray,
@@ -270,6 +271,6 @@ fun RightChat(message: Message){
 @Composable
 fun ChatScreenPreview(){
     GlobeGuruTheme {
-        ChatScreen(chatId = "Chat123")
+        ChatScreen(chatId = "Chat123", navBack={})
     }
 }

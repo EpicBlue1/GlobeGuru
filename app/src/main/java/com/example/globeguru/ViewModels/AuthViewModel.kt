@@ -43,21 +43,21 @@ class AuthViewModel(
             authUiState = authUiState.copy(registerTraveler = value)
         }
     }
-
     fun createNewUser(context: Context)= viewModelScope.launch {
         authUiState = authUiState.copy(errorMessage = "")
         try {
             if(authUiState.registerUsername.isBlank() || authUiState.registerEmail.isBlank() || authUiState.registerPassword.isBlank()){
                 authUiState = authUiState.copy(errorMessage = "Please fill in all the fields")
             } else {
-                authUiState = authUiState.copy(isLoading = true) //start loading
+                if (authUiState.registerPassword === authUiState.registerConPassword){
+                    authUiState = authUiState.copy(isLoading = true) //start loading
 
-                //call auth
-                authRepos.registerNewUser(
-                    authUiState.registerEmail,
-                    authUiState.registerPassword
-                ) {
-                    userId -> if(userId.isNotBlank()){
+                    //call auth
+                    authRepos.registerNewUser(
+                        authUiState.registerEmail,
+                        authUiState.registerPassword
+                    ) {
+                            userId -> if(userId.isNotBlank()){
                         FireStoreRepo().createUserInDb(uid = userId, username = authUiState.registerUsername, email = authUiState.registerEmail, traveller = authUiState.registerTraveler.toBoolean()){
                             if(it){
                                 Log.d("Register Success: ", userId)
@@ -74,13 +74,16 @@ class AuthViewModel(
                             }
                         }
 
-                } else {
-                    //register failed
-                    Log.d("Register failed: ", "Something went wrong")
-                    Toast.makeText(context, "Registration Failed", Toast.LENGTH_SHORT).show()
-                    authUiState = authUiState.copy(authSuccess = false)
-                    authUiState = authUiState.copy(errorMessage = "Invalid credentials")
+                    } else {
+                        //register failed
+                        Log.d("Register failed: ", "Something went wrong")
+                        Toast.makeText(context, "Registration Failed", Toast.LENGTH_SHORT).show()
+                        authUiState = authUiState.copy(authSuccess = false)
+                        authUiState = authUiState.copy(errorMessage = "Invalid credentials")
                     }
+                    }
+                } else {
+                    authUiState = authUiState.copy(errorMessage = "Passwords don't match")
                 }
             }
         } catch (e:Exception){

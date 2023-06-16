@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -66,6 +67,7 @@ fun LoginScreen(
     //get values from viewModel
     val uathUiState = authViewModel?.authUiState
     val error = uathUiState?.errorMessage != null
+    val loading = uathUiState?.isLoading
     val context = LocalContext.current
     val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 
@@ -164,6 +166,12 @@ fun LoginScreen(
                     TextButton(onClick = {navToRegister.invoke()}) {
                         Text(text = "Register", color = appBlue, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                     }
+                }
+            }
+
+            if(loading == true){
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    CircularProgressIndicator(modifier = Modifier)
                 }
             }
 

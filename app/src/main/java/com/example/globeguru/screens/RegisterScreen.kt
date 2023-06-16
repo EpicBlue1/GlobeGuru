@@ -1,5 +1,6 @@
 package com.example.globeguru.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -67,10 +69,19 @@ fun RegisterScreen(
     navToHome:()-> Unit
 ) {
 
-    val authUiState: AuthUiState? = authViewModel?.authUiState
+    val uathUiState: AuthUiState? = authViewModel?.authUiState
 
     val defaultCornerShape: CornerShape = RoundedCorner(10.dp)
     val context = LocalContext.current
+    val loading = uathUiState?.isLoading
+
+
+    val error = uathUiState?.errorMessage != null
+
+    fun Register(){
+        authViewModel?.createNewUser(context)
+//        Log.d("AAA Registering", "Lol")
+    }
 
     Column(
         modifier = Modifier
@@ -85,7 +96,6 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Card(
                 modifier = Modifier
                     .background(color = appDarkGray)
@@ -116,16 +126,21 @@ fun RegisterScreen(
             )
 
         }
+        if(error){
+            Text(text = uathUiState?.errorMessage.toString(), color = Color.Red)
+        }
         Column(
             modifier = Modifier
                 .padding(30.dp)
-                .fillMaxSize().weight(2f),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .weight(2f),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
             Column(modifier = Modifier) {
                 OutlinedTextField(
-                    value = authUiState?.registerUsername ?: "",
+                    value = uathUiState?.registerUsername ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -148,7 +163,7 @@ fun RegisterScreen(
                 )
 
                 OutlinedTextField(
-                    value = authUiState?.registerEmail ?: "",
+                    value = uathUiState?.registerEmail ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -171,7 +186,7 @@ fun RegisterScreen(
                 )
 
                 OutlinedTextField(
-                    value = authUiState?.registerCity ?: "",
+                    value = uathUiState?.registerCity ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -194,13 +209,16 @@ fun RegisterScreen(
                 )
 
                 Row(
-                    modifier = Modifier.height(60.dp).fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(text = "Traveller?", color = appWhite)
                     Switch(
-                        checked = authUiState?.registerTraveler.toBoolean(), onCheckedChange = {
+                        checked = uathUiState?.registerTraveler.toBoolean(), onCheckedChange = {
                             authViewModel?.handleStateChanges(
                                 "registerTraveler",
                                 it.toString()
@@ -216,7 +234,7 @@ fun RegisterScreen(
                 }
 
                 OutlinedTextField(
-                    value = authUiState?.registerPassword ?: "",
+                    value = uathUiState?.registerPassword ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -239,7 +257,7 @@ fun RegisterScreen(
                 )
 
                 OutlinedTextField(
-                    value = authUiState?.registerConPassword ?: "",
+                    value = uathUiState?.registerConPassword ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -287,6 +305,12 @@ fun RegisterScreen(
                 }
             }
 
+            if(loading == true){
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    CircularProgressIndicator(modifier = Modifier)
+                }
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -304,7 +328,7 @@ fun RegisterScreen(
                             lightSource = LightSource.LEFT_TOP,
                             shape = Flat(defaultCornerShape)
                         ),
-                    onClick = { authViewModel?.createNewUser(context) },
+                    onClick = { Register() },
                     shape = RoundedCornerShape(20),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = appDarkGray
