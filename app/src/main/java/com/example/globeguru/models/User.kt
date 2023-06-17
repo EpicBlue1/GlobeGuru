@@ -5,5 +5,6 @@ data class User(
     val username: String = "",
     val email: String = "",
     val profileImage: String = "",
+    val city: String = "",
     val traveller: Boolean = false
 )

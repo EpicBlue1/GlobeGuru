@@ -19,9 +19,9 @@ class FireStoreRepo {
     private val userRef = db.collection(USER_REF)
     private val chatsRef = db.collection(CONV_REF)
 
-    fun createUserInDb(uid: String, traveller: Boolean, username: String, email: String, onSuccess: (Boolean)-> Unit){
+    fun createUserInDb(uid: String, traveller: Boolean, city:String, username: String, email: String, onSuccess: (Boolean)-> Unit){
         userRef.document(uid)
-            .set(User(id= uid, username = username, email = email, profileImage = "", traveller = traveller))
+            .set(User(id= uid, username = username, city = city, email = email, profileImage = "", traveller = traveller))
             .addOnSuccessListener {
                 onSuccess.invoke(true)
                 Log.d("AAA Login Success: ", it.toString())

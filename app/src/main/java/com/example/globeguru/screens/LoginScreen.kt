@@ -65,9 +65,9 @@ fun LoginScreen(
     navToHome:()-> Unit
 ){
     //get values from viewModel
-    val uathUiState = authViewModel?.authUiState
-    val error = uathUiState?.errorMessage != null
-    val loading = uathUiState?.isLoading
+    val authUiState = authViewModel?.authUiState
+    val error = authUiState?.errorMessage != null
+    val loading = authUiState?.isLoading
     val context = LocalContext.current
     val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 
@@ -101,7 +101,7 @@ fun LoginScreen(
         }
 
         if(error){
-            Text(text = uathUiState?.errorMessage.toString(), color = Color.Red)
+            Text(text = authUiState?.errorMessage.toString(), color = Color.Red)
         }
 
         Column(modifier = Modifier
@@ -113,7 +113,7 @@ fun LoginScreen(
 
             Column(modifier = Modifier.height(250.dp), verticalArrangement = Arrangement.SpaceBetween) {
                 OutlinedTextField(
-                    value = uathUiState?.loginEmail ?: "",
+                    value = authUiState?.loginEmail ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
@@ -136,7 +136,7 @@ fun LoginScreen(
                 )
 
                 OutlinedTextField(
-                    value = uathUiState?.loginPassword ?: "",
+                    value = authUiState?.loginPassword ?: "",
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,

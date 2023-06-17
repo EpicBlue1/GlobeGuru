@@ -1,5 +1,10 @@
 package com.example.globeguru.screens
 
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,17 +19,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,16 +61,41 @@ import com.gandiva.neumorphic.shape.Flat
 import com.gandiva.neumorphic.shape.Pressed
 import com.gandiva.neumorphic.shape.RoundedCorner
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.globeguru.ViewModels.ProfileViewModel
+import com.example.globeguru.ui.theme.appBlue
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel? = null,
     navSignOut: ()-> Unit,
-    navBack:() -> Unit
+    navBack:() -> Unit,
+viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
 
+    val profileUiState = viewModel?.profileUiState
+
     val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
+
+    var pickedImages: List<Uri>? = null
+    var pickedImage: Uri? by remember { mutableStateOf(null) }
+
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        onResult = { items ->
+            pickedImages = items
+            // If you only need a single image, you can access the first item like this:
+            pickedImage = items.firstOrNull()
+        }
+    )
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -69,7 +104,7 @@ fun ProfileScreen(
         ) {
         Column(modifier = Modifier
             .fillMaxWidth()
-            .height(320.dp)
+            .height(300.dp)
             .background(color = appDarkGray),
             verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(modifier = Modifier
@@ -93,36 +128,71 @@ fun ProfileScreen(
                         contentDescription = "back")
                 }
             }
-            Image(modifier = Modifier
-                .height(110.dp)
-                .width(110.dp)
-                .neu(
-                    lightShadowColor = appLightGray,
-                    darkShadowColor = appDarkerGray,
-                    shadowElevation = 6.dp,
-                    lightSource = LightSource.LEFT_TOP,
-                    shape = Flat(RoundedCorner(100.dp))
+
+            Box(modifier = Modifier){
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(profileUiState?.profileImage ?: R.drawable.logo_android)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Travel",
+                    modifier = Modifier
+                        .width(110.dp)
+                        .height(110.dp)
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 6.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Flat(RoundedCorner(100.dp))
+                        )
+                        .clip(CircleShape)
+                    ,contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.ic_launcher_foreground),
                 )
-                .clip(CircleShape)
-                ,contentScale = ContentScale.Crop
-                ,painter = painterResource(id = R.drawable.profiletemp),
-                contentDescription = "add icon")
-            Text(modifier = Modifier.padding(10.dp), text = "Username", style = MaterialTheme.typography.titleLarge, color = appWhite)
-            Text(modifier = Modifier.padding(10.dp), text = "Email", style = MaterialTheme.typography.titleSmall, color = appWhite)
+                Column(modifier = Modifier
+                    .height(110.dp)
+                    .width(110.dp)
+                    .clip(CircleShape)
+                    .background(color = appLightGray.copy(alpha = 0.6f))
+                    .clickable {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center) {
+                    Image(modifier = Modifier
+                        .height(64.dp)
+                        .width(64.dp)
+                        .clip(CircleShape)
+                        ,contentScale = ContentScale.Inside
+                        ,painter = painterResource(id = R.drawable.edit),
+                        contentDescription = "profile icon")
+                }
+
+            }
+
+            Text(modifier = Modifier.padding(3.dp), text = profileUiState?.userName ?: "", style = MaterialTheme.typography.titleLarge, color = appWhite)
+            Text(modifier = Modifier.padding(3.dp), text = profileUiState?.email ?: "", style = MaterialTheme.typography.titleSmall, color = appWhite)
+
         }
 
-        Column(modifier = Modifier.padding(40.dp)) {
+        Column(modifier = Modifier
+            .padding(40.dp)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .weight(2f)) {
 
             OutlinedTextField(
-                value = "",
+                value = profileUiState?.userName ?: "",
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
                     textColor = Color.White,
                     cursorColor = Color.Black
                 ),
-                onValueChange = {""},
-                placeholder = {Text(text = "Update Profile")},
+                onValueChange = { viewModel.handleProfileStateChange(target = "userName", it) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
                     .padding(5.dp)
@@ -135,15 +205,88 @@ fun ProfileScreen(
                         shape = Pressed(RoundedCorner(10.dp)),
                     )
             )
+            OutlinedTextField(
+                value = profileUiState?.email ?: "",
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    textColor = Color.White,
+                    cursorColor = Color.Black
+                ),
+                enabled = false,
+                onValueChange = { "" },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
+                    .neu(
+                        lightShadowColor = appLightGray,
+                        darkShadowColor = appDarkerGray,
+                        shadowElevation = 6.dp,
+                        lightSource = LightSource.LEFT_TOP,
+                        shape = Pressed(RoundedCorner(10.dp)),
+                    )
+
+            )
+
+            Row(
+                modifier = Modifier
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Traveller?", color = appWhite)
+                Switch(
+                    checked = profileUiState?.traveler.toBoolean(), onCheckedChange = {
+                        viewModel.handleProfileStateChange(target = "userName", it.toString())
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = appBlue,
+                        uncheckedThumbColor = appDarkGray,
+                        checkedTrackColor = appDarkerGray,
+                        uncheckedTrackColor = appLightGray,
+                    )
+                )
+            }
         }
 
 
-        Row(modifier = Modifier
+
+
+        Column(modifier = Modifier
             .fillMaxWidth()
-            .padding(40.dp),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.SpaceBetween
+            .height(160.dp)
+            .padding(start = 40.dp, end = 40.dp, bottom = 40.dp),
+
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .neu(
+                        lightShadowColor = appLightGray,
+                        darkShadowColor = appDarkerGray,
+                        shadowElevation = 6.dp,
+                        lightSource = LightSource.LEFT_TOP,
+                        shape = Flat(defaultCornerShape)
+                    ),
+                onClick = { AuthRepos().signOut(); navSignOut.invoke() },
+                shape = RoundedCornerShape(20),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = appDarkGray)
+            ) {
+                Row(modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(modifier = Modifier
+                        .height(32.dp)
+                        .padding(top = 5.dp), fontWeight = FontWeight.Bold, text = "Save Changes")
+                }
+            }
 
             Button(
                 modifier = Modifier
@@ -158,7 +301,7 @@ fun ProfileScreen(
                 onClick = { AuthRepos().signOut(); navSignOut.invoke() },
                 shape = RoundedCornerShape(20),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = appDarkerGray)
+                    containerColor = appDarkGray)
             ) {
                 Row(modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -177,7 +320,7 @@ fun ProfileScreen(
         }
         
     }
-    
+
 }
 
 @Preview( showSystemUi = true)

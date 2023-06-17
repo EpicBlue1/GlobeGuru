@@ -48,8 +48,10 @@ class AuthViewModel(
         try {
             if(authUiState.registerUsername.isBlank() || authUiState.registerEmail.isBlank() || authUiState.registerPassword.isBlank()){
                 authUiState = authUiState.copy(errorMessage = "Please fill in all the fields")
+            } else if(authUiState.registerCity.isBlank()){
+                authUiState = authUiState.copy(errorMessage = "Please select country")
             } else {
-                if (authUiState.registerPassword === authUiState.registerConPassword){
+                if (authUiState.registerPassword == authUiState.registerConPassword){
                     authUiState = authUiState.copy(isLoading = true) //start loading
 
                     //call auth
@@ -58,11 +60,13 @@ class AuthViewModel(
                         authUiState.registerPassword
                     ) {
                             userId -> if(userId.isNotBlank()){
-                        FireStoreRepo().createUserInDb(uid = userId, username = authUiState.registerUsername, email = authUiState.registerEmail, traveller = authUiState.registerTraveler.toBoolean()){
-                            if(it){
+
+                            FireStoreRepo().createUserInDb(uid = userId, username = authUiState.registerUsername, city = authUiState.registerCity, email = authUiState.registerEmail, traveller = authUiState.registerTraveler.toBoolean()){
+
+                                if(it){
                                 Log.d("Register Success: ", userId)
 
-                                Toast.makeText(context, "Registration Completed", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Complete! Go to settings and  change your profile", Toast.LENGTH_LONG).show()
 
                                 authUiState = authUiState.copy(authSuccess = true)
                             } else {

@@ -209,34 +209,6 @@ fun ConversationScreen(
                 }
             }
         }
-        Row(modifier = Modifier.height(64.dp).fillMaxWidth().background(color = appDarkerGray), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceAround) {
-            Box(modifier = Modifier.height(45.dp).width(45.dp).clip(shape = RoundedCornerShape(20)).background(color = Color.Transparent)) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(R.drawable.add_icon)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "NonTravel",
-                    modifier = Modifier
-                        .width(44.dp)
-                        .height(44.dp),
-                    placeholder = painterResource(R.drawable.ic_launcher_foreground),
-                )
-            }
-            Box(modifier = Modifier.height(46.dp).width(45.dp).clip(shape = RoundedCornerShape(20)).background(color = appDarkGray)) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(R.drawable.add_icon)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Travel",
-                    modifier = Modifier
-                        .width(44.dp)
-                        .height(44.dp),
-                    placeholder = painterResource(R.drawable.ic_launcher_foreground),
-                )
-            }
-        }
     }
 }
 

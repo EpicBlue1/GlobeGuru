@@ -1,9 +1,13 @@
 package com.example.globeguru.screens
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,46 +16,55 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.AuthUiState
 import com.example.globeguru.ViewModels.AuthViewModel
+import com.example.globeguru.models.Flags
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appBlue
 import com.example.globeguru.ui.theme.appDarkGray
 import com.example.globeguru.ui.theme.appDarkerGray
 import com.example.globeguru.ui.theme.appLightGray
+import com.example.globeguru.ui.theme.appNewBlue
 import com.example.globeguru.ui.theme.appWhite
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
@@ -71,16 +84,23 @@ fun RegisterScreen(
 
     val uathUiState: AuthUiState? = authViewModel?.authUiState
 
+    //Dropdown
+    val options = listOf(
+        Flags(R.drawable.cananda, "Canada"),
+        Flags(R.drawable.us, "US"),
+        Flags(R.drawable.southafrica, "SA"),
+        Flags(R.drawable.norway, "Norway")
+    )
+    var selectedFlag by remember { mutableStateOf<Flags?>(null) }
+
     val defaultCornerShape: CornerShape = RoundedCorner(10.dp)
     val context = LocalContext.current
     val loading = uathUiState?.isLoading
-
 
     val error = uathUiState?.errorMessage != null
 
     fun Register(){
         authViewModel?.createNewUser(context)
-//        Log.d("AAA Registering", "Lol")
     }
 
     Column(
@@ -91,44 +111,33 @@ fun RegisterScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.dp),
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card(
-                modifier = Modifier
-                    .background(color = appDarkGray)
-                    .neu(
-                        lightShadowColor = appLightGray,
-                        darkShadowColor = appDarkerGray,
-                        shadowElevation = 6.dp,
-                        lightSource = LightSource.LEFT_TOP,
-                        shape = Flat(defaultCornerShape),
-                    ),
-                colors = CardDefaults.cardColors(
-                    containerColor = appLightGray,
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            ) {
-                Image(
+            Box(modifier = Modifier.fillMaxWidth()){
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(R.drawable.background)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Background",
                     modifier = Modifier
-                        .padding(10.dp)
-                        .height(80.dp), painter = painterResource(id = R.drawable.add_icon),
-                    contentDescription = "add icon"
-                )
+                        .fillMaxWidth()
+                        .padding(3.dp)
+                        .height(130.dp),
+                    placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                    contentScale = ContentScale.FillWidth)
+                Text(modifier = Modifier
+                    .padding(45.dp)
+                    .fillMaxWidth(), textAlign = TextAlign.Center, text = "A new journey awaits", style = MaterialTheme.typography.titleLarge, color = appWhite)
             }
-            Text(
-                modifier = Modifier.padding(20.dp),
-                text = "Upload Profile",
-                style = MaterialTheme.typography.titleMedium,
-                color = appWhite
-            )
-
         }
+
         if(error){
             Text(text = uathUiState?.errorMessage.toString(), color = Color.Red)
         }
+
         Column(
             modifier = Modifier
                 .padding(30.dp)
@@ -137,7 +146,6 @@ fun RegisterScreen(
                 .weight(2f),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-
             Column(modifier = Modifier) {
                 OutlinedTextField(
                     value = uathUiState?.registerUsername ?: "",
@@ -185,29 +193,6 @@ fun RegisterScreen(
                         )
                 )
 
-                OutlinedTextField(
-                    value = uathUiState?.registerCity ?: "",
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        textColor = Color.White,
-                        cursorColor = Color.Black
-                    ),
-                    onValueChange = { authViewModel?.handleStateChanges("registerCity", it) },
-                    placeholder = { Text(text = "City") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                        .neu(
-                            lightShadowColor = appLightGray,
-                            darkShadowColor = appDarkerGray,
-                            shadowElevation = 6.dp,
-                            lightSource = LightSource.LEFT_TOP,
-                            shape = Pressed(RoundedCorner(10.dp)),
-                        )
-                )
-
                 Row(
                     modifier = Modifier
                         .height(60.dp)
@@ -231,6 +216,46 @@ fun RegisterScreen(
                             uncheckedTrackColor = appLightGray,
                         )
                     )
+                }
+
+                Text(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp), text = if (uathUiState?.registerTraveler.toBoolean()) "Destination:" else "Origin:", color = appWhite)
+
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    options.forEach { flag ->
+                        val isSelected = flag == selectedFlag
+                        Box(modifier = Modifier
+                            .width(46.dp)
+                            .height(46.dp)
+                            .border(
+                                BorderStroke(
+                                    4.dp,
+                                    color = if (isSelected) appNewBlue else Color.Transparent
+                                ), shape = CircleShape
+                            )) {
+                            Image(
+                                modifier = Modifier
+                                    .width(46.dp)
+                                    .clickable {
+                                        selectedFlag = if (isSelected) null else flag; Log.d(
+                                        "BBB Image selected",
+                                        selectedFlag?.country ?: " "
+                                    ); authViewModel?.handleStateChanges(
+                                        "registerCity",
+                                        selectedFlag?.country.toString()
+                                    )
+                                    }
+                                    .height(46.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop,
+                                painter = painterResource(id = flag.imageId),
+                                contentDescription = flag.toString()
+                            )
+                        }
+                    }
                 }
 
                 OutlinedTextField(
@@ -354,11 +379,16 @@ fun RegisterScreen(
             }
         }
     }
+
     LaunchedEffect(key1 = authViewModel?.hashUser) {
         if (authViewModel?.hashUser == true) {
             navToHome.invoke()
         }
     }
+}
+
+fun DropdownMenuItem(text: () -> Unit, onClick: () -> Unit, interactionSource: () -> Unit) {
+
 }
 
 @Preview(showSystemUi = true)
