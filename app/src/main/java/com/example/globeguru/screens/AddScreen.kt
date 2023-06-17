@@ -76,26 +76,23 @@ import com.example.globeguru.ViewModels.ProfileViewModel
 fun AddScreen(
     viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     navBack: () -> Unit,
+    onNavToChat: (chatId: String)->Unit,
     profileViewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ){
 
-    val allConvos = viewModel.chatList ?: listOf<User>()
-    Log.d("DDD convos", allConvos.toList().toString())
-
     val profileUiState = profileViewModel.profileUiState
-    var code by remember { mutableStateOf(profileUiState.cityCode) }
-
-    if (profileUiState.cityCode == ""){
-
-    } else {
-        code = profileUiState.cityCode
+    var code by remember { mutableStateOf("") }
+    var allChats by remember {
+        mutableStateOf(listOf<User>())
     }
 
     Log.d("DD", profileUiState.toString())
 
+    allChats = viewModel.chatList ?: listOf<User>()
+
     fun getFilteredChats(){
         Log.d("DDD code", code)
-        viewModel.getChats("ll")
+        viewModel.getChats(code)
     }
 
     Column(modifier = Modifier
@@ -199,14 +196,15 @@ fun AddScreen(
 
         LazyVerticalStaggeredGrid(
             modifier = Modifier
-                .padding(15.dp)
+                .padding(20.dp)
                 .fillMaxSize()
-                .weight(2f),
+                .weight(2f)
+                ,
             columns = StaggeredGridCells.Fixed(4),
             verticalItemSpacing = 20.dp,
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ){
-            items(allConvos){
+            items(allChats){
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -216,7 +214,7 @@ fun AddScreen(
                             color = appLightGray,
                             shape = RoundedCornerShape(5.dp)
                         )
-                        .clickable { "onNavToChat.invoke(chat.id)" }
+                        .clickable { onNavToChat.invoke(it.id) }
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
@@ -275,7 +273,9 @@ fun AddScreen(
                 )
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().clickable{ getFilteredChats() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { getFilteredChats() },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
@@ -299,6 +299,6 @@ fun AddScreen(
 @Composable
 fun AddScreenPreview(){
     GlobeGuruTheme {
-        AddScreen(navBack = {})
+        AddScreen(navBack = {}, onNavToChat = {})
     }
 }

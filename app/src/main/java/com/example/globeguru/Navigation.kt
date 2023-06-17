@@ -124,7 +124,12 @@ fun Navigation(
                     launchSingleTop = true
                     popUpTo(route = Routes.Conversations.name)
                 }
-            })
+            }, onNavToChat = {
+                navController.navigate("${Routes.Chat.name}/${it}"){
+                    launchSingleTop = true
+                }
+            }
+            )
         }
     }
 }

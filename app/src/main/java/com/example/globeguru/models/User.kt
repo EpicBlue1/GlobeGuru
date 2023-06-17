@@ -7,5 +7,6 @@ data class User(
     val profileImage: String = "",
     val city: String = "",
     val cityCode: String = "",
-    val traveller: Boolean = false
+    val traveller: Boolean = false,
+    val chats: String = ""
 )

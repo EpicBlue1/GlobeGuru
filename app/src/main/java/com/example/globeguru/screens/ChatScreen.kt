@@ -46,8 +46,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ChatViewModel
+import com.example.globeguru.ViewModels.ProfileViewModel
 import com.example.globeguru.models.Conversations
 import com.example.globeguru.models.Message
+import com.example.globeguru.repositories.AuthRepos
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appBlue
 import com.example.globeguru.ui.theme.appDarkGray
@@ -67,10 +69,16 @@ val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(modifier: Modifier = Modifier,
+               authRepos: AuthRepos = AuthRepos(),
                chatId: String?,
                navBack:()-> Unit,
-               viewModel: ChatViewModel = androidx.lifecycle.viewmodel.compose.viewModel())
+               viewModel: ChatViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+               ProfileViewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel())
+
     {
+
+        val currentUserId = authRepos.getUserId()
+        Log.d("ZZZ currentUser and current chat", currentUserId + " " + chatId)
 
         var newMessage: String by remember {
             mutableStateOf("")
@@ -89,6 +97,7 @@ fun ChatScreen(modifier: Modifier = Modifier,
 
         val allMessages = viewModel?.messageList ?: listOf<Message>()
         Log.d("LOL", allMessages.toList().toString())
+
 
     Column(modifier = Modifier
 
@@ -180,6 +189,7 @@ fun ChatScreen(modifier: Modifier = Modifier,
                     .clickable {
                         viewModel.sendNewMessage(newMessage, chatId ?: "")
                         newMessage = ""
+
                     }
                     .border(width = 2.dp, color = appNewBlue, shape = RoundedCornerShape(20))
                 ){

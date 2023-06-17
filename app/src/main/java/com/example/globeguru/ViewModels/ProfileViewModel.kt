@@ -55,6 +55,7 @@ class ProfileViewModel(
                     userName = it?.username ?: "",
                     email = it?.email ?: "",
                     city = it?.city ?: "",
+                    chats = it?.chats ?: "",
                     cityCode = it?.cityCode ?: "",
                     profileImage = Uri.parse(it?.profileImage),
                     traveler = it?.traveller.toString()
@@ -80,6 +81,7 @@ class ProfileViewModel(
                 traveller = profileUiState.traveler.toBoolean(),
                 cityCode = profileUiState.cityCode,
                 city = profileUiState.city,
+                chats = profileUiState.chats,
                 profileImage = downloadUrl)){
 //                    Log.d("AAA updated user", it.toString())
             }
@@ -99,4 +101,5 @@ data class ProfileUiState(
     val cityCode: String = "",
     val profileImage: Uri = Uri.EMPTY,
     val traveler: String = "false",
+    val chats: String = ""
 )
