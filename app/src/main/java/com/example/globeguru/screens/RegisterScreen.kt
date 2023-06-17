@@ -86,10 +86,10 @@ fun RegisterScreen(
 
     //Dropdown
     val options = listOf(
-        Flags(R.drawable.cananda, "canada"),
-        Flags(R.drawable.us, "us"),
-        Flags(R.drawable.southafrica, "sa"),
-        Flags(R.drawable.norway, "norway")
+        Flags(R.drawable.cananda, "canada", "#R8UGN3"),
+        Flags(R.drawable.us, "us", "#FG78UH"),
+        Flags(R.drawable.southafrica, "sa", "#HOIML4"),
+        Flags(R.drawable.norway, "norway", "#55PP9K")
     )
     var selectedFlag by remember { mutableStateOf<Flags?>(null) }
 
@@ -100,6 +100,7 @@ fun RegisterScreen(
     val error = uathUiState?.errorMessage != null
 
     fun Register(){
+        selectedFlag?.let { authViewModel?.handleStateChanges("registerCityCode", it.countryCode) }
         authViewModel?.createNewUser(context)
     }
 

@@ -39,6 +39,8 @@ class AuthViewModel(
             authUiState = authUiState.copy(registerEmail = value)
         } else if(target == "registerCity"){
             authUiState = authUiState.copy(registerCity = value)
+        } else if(target == "registerCityCode"){
+            authUiState = authUiState.copy(registerCountryCode = value)
         } else if(target == "registerTraveler"){
             authUiState = authUiState.copy(registerTraveler = value)
         }
@@ -61,7 +63,14 @@ class AuthViewModel(
                     ) {
                             userId -> if(userId.isNotBlank()){
 
-                            FireStoreRepo().createUserInDb(uid = userId, username = authUiState.registerUsername, city = authUiState.registerCity, email = authUiState.registerEmail, traveller = authUiState.registerTraveler.toBoolean()){
+                            FireStoreRepo().createUserInDb(uid = userId,
+                                username = authUiState.registerUsername,
+                                city = authUiState.registerCity,
+                                email = authUiState.registerEmail,
+                                cityCode = authUiState.registerCountryCode,
+                                traveller = authUiState.registerTraveler.toBoolean(),
+
+                            ){
 
                                 if(it){
                                 Log.d("Register Success: ", userId)
@@ -152,5 +161,6 @@ data class AuthUiState(
     val registerConPassword: String = "",
     val registerEmail: String = "",
     val registerCity: String = "",
+    val registerCountryCode: String = "",
     val registerTraveler: String = "false",
 )

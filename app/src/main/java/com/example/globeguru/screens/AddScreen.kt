@@ -17,12 +17,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,16 +36,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ConvoViewModel
-import com.example.globeguru.ViewModels.ProfileViewModel
 import com.example.globeguru.models.Conversations
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appDarkGray
@@ -52,100 +55,113 @@ import com.example.globeguru.ui.theme.semGreen
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Flat
+import com.gandiva.neumorphic.shape.Pressed
 import com.gandiva.neumorphic.shape.RoundedCorner
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ConversationScreen(
-    viewModel: ConvoViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = viewModel(),
-    navToProfile: () -> Unit,
-    onNavToChat: (chatId: String)->Unit,
-    onNavToAdd: () -> Unit
-){
-    val allChats = viewModel?.chatList ?: listOf<Conversations>()
-    val profileUiState = profileViewModel?.profileUiState
+fun AddScreen(viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navBack:() -> Unit){
+
+    val allConvos = viewModel.chatList ?: listOf<Conversations>()
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(appDarkGray), horizontalAlignment = Alignment.CenterHorizontally) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp)
-            .height(110.dp),
-        verticalArrangement = Arrangement.SpaceAround, horizontalAlignment = Alignment.CenterHorizontally
+        .background(appDarkGray),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
-                AsyncImage(modifier = Modifier
-                    .height(80.dp)
-                    .width(80.dp)
-                    .clickable { navToProfile.invoke() }
-                    .neu(
-                        lightShadowColor = appLightGray,
-                        darkShadowColor = appDarkerGray,
-                        shadowElevation = 4.dp,
-                        lightSource = LightSource.LEFT_TOP,
-                        shape = Flat(RoundedCorner(100.dp))
-                    )
-                    .clip(CircleShape)
-                    ,contentScale = ContentScale.Crop
-                    ,model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(if(profileUiState?.profileImage.toString() == "") R.drawable.tempprofile else profileUiState?.profileImage ?: R.drawable.tempprofile)
+
+            Box(modifier = Modifier.fillMaxWidth()){
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 20.dp)) {
+                    Box(modifier = Modifier
+                        .clickable { navBack.invoke() }
+                        .neu(
+                            lightShadowColor = appLightGray,
+                            darkShadowColor = appDarkerGray,
+                            shadowElevation = 4.dp,
+                            lightSource = LightSource.LEFT_TOP,
+                            shape = Flat(defaultCornerShape)
+                        )
+                        .border(width = 2.dp, color = appLightGray, shape = RoundedCornerShape(20))
+                    ){
+                        Image(modifier = Modifier
+                            .height(50.dp)
+                            ,painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = "back")
+                    }
+                }
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(R.drawable.background)
                         .crossfade(true)
                         .build(),
-                    contentDescription = "profile icon")
-                Column(modifier = Modifier
-                    .padding(start = 35.dp, top = 5.dp)
-                    .height(80.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .neu(
-                                lightShadowColor = appLightGray,
-                                darkShadowColor = appDarkerGray,
-                                shadowElevation = 6.dp,
-                                lightSource = LightSource.LEFT_TOP,
-                                shape = Flat(defaultCornerShape)
-                            ),
-                        onClick = { "" },
-                        shape = RoundedCornerShape(20),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = appDarkGray
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .height(32.dp)
-                                    .width(32.dp)
-                                    .padding(top = 2.dp),
-                                contentScale = ContentScale.FillHeight,
-                                painter = painterResource(id = R.drawable.userplus),
-                                contentDescription = "Logo"
-                            )
-                            Text(modifier = Modifier.clickable{onNavToAdd.invoke()}, fontWeight = FontWeight.Bold, text = "Add connection", color = appWhite)
-                        }
-                    }
-                    Text(modifier = Modifier.fillMaxWidth(), text = "Total Chats: " + allChats.count(), color = appWhite, textAlign = TextAlign.Start)
-                }
+                    contentDescription = "Background",
+                    modifier = Modifier
+                        .fillMaxWidth()
+//                        .padding(top = 20.dp)
+                        .height(90.dp),
+                    contentScale = ContentScale.FillWidth)
+                Text(modifier = Modifier
+                    .padding(45.dp, top = 60.dp)
+                    .fillMaxWidth(), textAlign = TextAlign.Center, text = "Add by ticket code", style = MaterialTheme.typography.titleLarge, color = appWhite)
             }
         }
-        
+
         Row(modifier = Modifier.padding(10.dp)) {
             Box(modifier = Modifier
                 .fillMaxWidth()
+                .padding(bottom = 15.dp)
                 .height(2.dp)
                 .border(
                     width = 4.dp,
                     color = appLightGray,
                     shape = RoundedCornerShape(5.dp)
                 )) {
-                
             }
+        }
+
+        Column() {
+            Image(painter = painterResource(id = R.drawable.ticket),
+                contentDescription = "Ticket Preview",
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp))
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(30.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .weight(2f),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            OutlinedTextField(
+                value = "",
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    textColor = Color.White,
+                    cursorColor = Color.Black
+                ),
+                onValueChange = { "authViewModel?.handleStateChanges(registerUsername, it)" },
+                placeholder = { Text(text = "#Code") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
+                    .neu(
+                        lightShadowColor = appLightGray,
+                        darkShadowColor = appDarkerGray,
+                        shadowElevation = 6.dp,
+                        lightSource = LightSource.LEFT_TOP,
+                        shape = Pressed(RoundedCorner(10.dp)),
+                    )
+            )
         }
 
         LazyVerticalStaggeredGrid(
@@ -157,7 +173,7 @@ fun ConversationScreen(
             verticalItemSpacing = 20.dp,
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ){
-            items(allChats){chat ->
+            items(allConvos){chat ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,14 +183,14 @@ fun ConversationScreen(
                             color = appLightGray,
                             shape = RoundedCornerShape(5.dp)
                         )
-                        .clickable { onNavToChat.invoke(chat.id) }
+                        .clickable { "onNavToChat.invoke(chat.id)" }
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(chat.image)
+                            .data("chat.image")
                             .crossfade(true)
                             .build(),
-                        contentDescription = chat.name,
+                        contentDescription = "chat.name",
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(3.dp)
@@ -188,16 +204,16 @@ fun ConversationScreen(
                         .width(25.dp)
                         .height(25.dp)
                     ) {
-                        Text(text = chat.totalMessages.toString(), modifier = Modifier
+                        Text(text = "chat.totalMessages.toString()", modifier = Modifier
                             .fillMaxWidth()
                             .zIndex(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
                     }
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(chat.countryImage)
+                            .data("chat.countryImage")
                             .crossfade(true)
                             .build(),
-                        contentDescription = chat.name,
+                        contentDescription = "chat.name",
                         modifier = Modifier
                             .align(alignment = Alignment.BottomEnd)
                             .clip(CircleShape)
@@ -213,13 +229,15 @@ fun ConversationScreen(
                 }
             }
         }
+
+
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
-fun ConversationScreenPreview(){
+fun AddScreenPreview(){
     GlobeGuruTheme {
-        ConversationScreen(navToProfile={}, onNavToChat = {}, onNavToAdd = {})
+        AddScreen(navBack = {})
     }
 }

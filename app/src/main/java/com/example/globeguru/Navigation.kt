@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.globeguru.ViewModels.AuthViewModel
+import com.example.globeguru.screens.AddScreen
 import com.example.globeguru.screens.ChatScreen
 import com.example.globeguru.screens.ConversationScreen
 import com.example.globeguru.screens.LoginScreen
@@ -25,7 +26,6 @@ enum class Routes {
     Chat,
     Profile,
     AddConversation,
-    Search
 }
 
 @Composable
@@ -85,6 +85,11 @@ fun Navigation(
                         launchSingleTop = true
                     }
                 },
+                onNavToAdd = {
+                    navController.navigate(Routes.AddConversation.name) {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 
@@ -106,6 +111,15 @@ fun Navigation(
             arguments = listOf(navArgument("chatId"){type = NavType.StringType; defaultValue = "chat123"})
             ){
             ChatScreen( chatId = it.arguments?.getString("chatId"), navBack = {
+                navController.navigate(Routes.Conversations.name){
+                    launchSingleTop = true
+                    popUpTo(route = Routes.Conversations.name)
+                }
+            })
+        }
+
+        composable(route = Routes.AddConversation.name){
+            AddScreen(navBack = {
                 navController.navigate(Routes.Conversations.name){
                     launchSingleTop = true
                     popUpTo(route = Routes.Conversations.name)

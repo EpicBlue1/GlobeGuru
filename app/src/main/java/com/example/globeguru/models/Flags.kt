@@ -1,3 +1,7 @@
 package com.example.globeguru.models
 
-data class Flags(val imageId: Int, val country: String)
+data class Flags(
+    val imageId: Int,
+    val country: String,
+    val countryCode: String
+    )

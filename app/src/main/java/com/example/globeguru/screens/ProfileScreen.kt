@@ -115,7 +115,6 @@ fun ProfileScreen(
                         lightSource = LightSource.LEFT_TOP,
                         shape = Flat(defaultCornerShape)
                     )
-//                    .background(color = appLightGray)
                     .border(width = 2.dp, color = appLightGray, shape = RoundedCornerShape(20))
                 ){
                     Image(modifier = Modifier
@@ -128,7 +127,7 @@ fun ProfileScreen(
             Box(modifier = Modifier){
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current)
-                        .data(profileUiState?.profileImage ?: R.drawable.logo_android)
+                        .data(profileUiState?.profileImage ?: R.drawable.tempprofile)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Travel",
@@ -286,7 +285,7 @@ fun ProfileScreen(
                 ) {
                     Text(modifier = Modifier
                         .height(32.dp)
-                        .padding(top = 5.dp), fontWeight = FontWeight.Bold, text = "Save Changes")
+                        .padding(top = 5.dp), fontWeight = FontWeight.Bold, text = "Save Changes", color = appWhite)
                 }
             }
 
@@ -316,7 +315,7 @@ fun ProfileScreen(
                         contentScale = ContentScale.FillHeight,
                         painter = painterResource(id = R.drawable.logo_android),
                         contentDescription = "Logo")
-                    Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Sign Out")
+                    Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Sign Out", color = appWhite )
                 }
             }
         }
