@@ -86,10 +86,10 @@ fun RegisterScreen(
 
     //Dropdown
     val options = listOf(
-        Flags(R.drawable.cananda, "Canada"),
-        Flags(R.drawable.us, "US"),
-        Flags(R.drawable.southafrica, "SA"),
-        Flags(R.drawable.norway, "Norway")
+        Flags(R.drawable.cananda, "canada"),
+        Flags(R.drawable.us, "us"),
+        Flags(R.drawable.southafrica, "sa"),
+        Flags(R.drawable.norway, "norway")
     )
     var selectedFlag by remember { mutableStateOf<Flags?>(null) }
 

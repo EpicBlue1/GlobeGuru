@@ -41,6 +41,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ConvoViewModel
+import com.example.globeguru.ViewModels.ProfileViewModel
 import com.example.globeguru.models.Conversations
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appDarkGray
@@ -57,10 +58,12 @@ import com.gandiva.neumorphic.shape.RoundedCorner
 @Composable
 fun ConversationScreen(
     viewModel: ConvoViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = viewModel(),
     navToProfile: () -> Unit,
     onNavToChat: (chatId: String)->Unit,
 ){
     val allChats = viewModel?.chatList ?: listOf<Conversations>()
+    val profileUiState = profileViewModel?.profileUiState
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -69,13 +72,10 @@ fun ConversationScreen(
             .fillMaxWidth()
             .padding(top = 10.dp)
             .height(110.dp),
-//            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceAround
         verticalArrangement = Arrangement.SpaceAround, horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            Text(text = "GlobeGuru", style = MaterialTheme.typography.titleMedium,
-//                color = appWhite)
             Row(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
-                Image(modifier = Modifier
+                AsyncImage(modifier = Modifier
                     .height(80.dp)
                     .width(80.dp)
                     .clickable { navToProfile.invoke() }
@@ -88,8 +88,11 @@ fun ConversationScreen(
                     )
                     .clip(CircleShape)
                     ,contentScale = ContentScale.Crop
-                    ,painter = painterResource(id = R.drawable.profiletemp),
-                    contentDescription = "dd icon")
+                    ,model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(if(profileUiState?.profileImage.toString() == "") R.drawable.tempprofile else profileUiState?.profileImage ?: R.drawable.tempprofile)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "profile icon")
                 Column(modifier = Modifier
                     .padding(start = 35.dp, top = 5.dp)
                     .height(80.dp), verticalArrangement = Arrangement.SpaceBetween) {

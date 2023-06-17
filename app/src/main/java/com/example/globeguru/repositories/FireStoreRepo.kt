@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.globeguru.models.Conversations
 import com.example.globeguru.models.Message
 import com.example.globeguru.models.User
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -92,6 +93,21 @@ class FireStoreRepo {
             .addOnFailureListener{
                 Log.d(ContentValues.TAG, "AA get failed with" )
                 onSuccess.invoke(null)
+            }.await()
+    }
+
+    suspend fun updateProfile(user: User, onSuccess: (Boolean)-> Unit){
+        userRef.document(user.id)
+                //just merge don't override
+            .set(user, SetOptions.merge())
+            .addOnSuccessListener {
+                onSuccess.invoke(true)
+                Log.d("AAA update Success: ", it.toString())
+            }
+            .addOnFailureListener{
+                onSuccess.invoke(false)
+                Log.d("AAA update failure: ", it.localizedMessage)
+                    it.printStackTrace()
             }.await()
     }
 }

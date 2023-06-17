@@ -50,7 +50,7 @@ class AuthViewModel(
                 authUiState = authUiState.copy(errorMessage = "Please fill in all the fields")
             } else if(authUiState.registerCity.isBlank()){
                 authUiState = authUiState.copy(errorMessage = "Please select country")
-            } else {
+            } else if(authUiState.registerUsername.isNotBlank() || authUiState.registerEmail.isNotBlank() || authUiState.registerPassword.isNotBlank()) {
                 if (authUiState.registerPassword == authUiState.registerConPassword){
                     authUiState = authUiState.copy(isLoading = true) //start loading
 
@@ -78,7 +78,8 @@ class AuthViewModel(
                             }
                         }
 
-                    } else {
+                    }
+                    else {
                         //register failed
                         Log.d("Register failed: ", "Something went wrong")
                         Toast.makeText(context, "Registration Failed", Toast.LENGTH_SHORT).show()

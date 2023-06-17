@@ -77,23 +77,19 @@ fun ProfileScreen(
     authViewModel: AuthViewModel? = null,
     navSignOut: ()-> Unit,
     navBack:() -> Unit,
-viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
 
     val profileUiState = viewModel?.profileUiState
 
     val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 
-    var pickedImages: List<Uri>? = null
-    var pickedImage: Uri? by remember { mutableStateOf(null) }
-
-
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { items ->
-            pickedImages = items
-            // If you only need a single image, you can access the first item like this:
-            pickedImage = items.firstOrNull()
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { item ->
+            if (item != null) {
+                viewModel.handleProfileImgUpdate(item)
+            }
         }
     )
 
@@ -106,10 +102,10 @@ viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
             .fillMaxWidth()
             .height(300.dp)
             .background(color = appDarkGray),
-            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)) {
+                .padding(start = 20.dp, bottom = 20.dp, top = 20.dp)) {
                 Box(modifier = Modifier
                     .clickable { navBack.invoke() }
                     .neu(
@@ -170,12 +166,21 @@ viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
                         ,painter = painterResource(id = R.drawable.edit),
                         contentDescription = "profile icon")
                 }
-
             }
 
-            Text(modifier = Modifier.padding(3.dp), text = profileUiState?.userName ?: "", style = MaterialTheme.typography.titleLarge, color = appWhite)
-            Text(modifier = Modifier.padding(3.dp), text = profileUiState?.email ?: "", style = MaterialTheme.typography.titleSmall, color = appWhite)
+            Row(modifier = Modifier.padding(3.dp).fillMaxWidth(), Arrangement.Center, Alignment.CenterVertically) {
+                Text(text = profileUiState?.userName ?: "", style = MaterialTheme.typography.titleLarge, color = appWhite)
+                Image(modifier = Modifier
+                    .width(35.dp)
+                    .height(35.dp)
+                    .clip(CircleShape), painter = painterResource(id = if(profileUiState?.city == "southafrica") R.drawable.southafrica
+                else if (profileUiState?.city == "us") R.drawable.us
+                else if(profileUiState?.city == "norway") R.drawable.norway
+                else if (profileUiState?.city == "sa") R.drawable.southafrica
+                else R.drawable.logo_android), contentDescription = "Flag" )
+            }
 
+            Text(modifier = Modifier.padding(3.dp), text = profileUiState?.email ?: "", style = MaterialTheme.typography.titleSmall, color = appWhite)
         }
 
         Column(modifier = Modifier
@@ -240,7 +245,7 @@ viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
                 Text(text = "Traveller?", color = appWhite)
                 Switch(
                     checked = profileUiState?.traveler.toBoolean(), onCheckedChange = {
-                        viewModel.handleProfileStateChange(target = "userName", it.toString())
+                        viewModel.handleProfileStateChange(target = "traveler", it.toString())
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = appBlue,
@@ -251,9 +256,6 @@ viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
                 )
             }
         }
-
-
-
 
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -273,7 +275,7 @@ viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
                         lightSource = LightSource.LEFT_TOP,
                         shape = Flat(defaultCornerShape)
                     ),
-                onClick = { AuthRepos().signOut(); navSignOut.invoke() },
+                onClick = { viewModel.saveProfileData() },
                 shape = RoundedCornerShape(20),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = appDarkGray)
