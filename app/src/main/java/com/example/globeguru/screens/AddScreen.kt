@@ -1,5 +1,6 @@
 package com.example.globeguru.screens
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,12 +23,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +53,8 @@ import coil.request.ImageRequest
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ConvoViewModel
 import com.example.globeguru.models.Conversations
+import com.example.globeguru.models.Flags
+import com.example.globeguru.models.User
 import com.example.globeguru.ui.theme.GlobeGuruTheme
 import com.example.globeguru.ui.theme.appDarkGray
 import com.example.globeguru.ui.theme.appDarkerGray
@@ -57,12 +66,37 @@ import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Flat
 import com.gandiva.neumorphic.shape.Pressed
 import com.gandiva.neumorphic.shape.RoundedCorner
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.example.globeguru.ViewModels.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun AddScreen(viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navBack:() -> Unit){
+fun AddScreen(
+    viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    navBack: () -> Unit,
+    profileViewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+){
 
-    val allConvos = viewModel.chatList ?: listOf<Conversations>()
+    val allConvos = viewModel.chatList ?: listOf<User>()
+    Log.d("DDD convos", allConvos.toList().toString())
+
+    val profileUiState = profileViewModel.profileUiState
+    var code by remember { mutableStateOf(profileUiState.cityCode) }
+
+    if (profileUiState.cityCode == ""){
+
+    } else {
+        code = profileUiState.cityCode
+    }
+
+    Log.d("DD", profileUiState.toString())
+
+    fun getFilteredChats(){
+        Log.d("DDD code", code)
+        viewModel.getChats("ll")
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -141,15 +175,14 @@ fun AddScreen(viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.v
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             OutlinedTextField(
-                value = "",
+                value = code,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
                     textColor = Color.White,
                     cursorColor = Color.Black
                 ),
-                onValueChange = { "authViewModel?.handleStateChanges(registerUsername, it)" },
-                placeholder = { Text(text = "#Code") },
+                onValueChange = { code = it },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
                     .padding(5.dp)
@@ -173,7 +206,7 @@ fun AddScreen(viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.v
             verticalItemSpacing = 20.dp,
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ){
-            items(allConvos){chat ->
+            items(allConvos){
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -187,30 +220,22 @@ fun AddScreen(viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.v
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data("chat.image")
+                            .data(it.profileImage)
                             .crossfade(true)
                             .build(),
-                        contentDescription = "chat.name",
+                        contentDescription = it.username,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(3.dp)
                             .height(194.dp),
                         placeholder = painterResource(R.drawable.ic_launcher_foreground),
                         contentScale = ContentScale.FillHeight)
-                    Box(modifier = Modifier
-                        .clip(CircleShape)
-                        .background(color = semGreen)
-                        .padding(1.dp)
-                        .width(25.dp)
-                        .height(25.dp)
-                    ) {
-                        Text(text = "chat.totalMessages.toString()", modifier = Modifier
-                            .fillMaxWidth()
-                            .zIndex(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-                    }
                     AsyncImage(
                         model = ImageRequest.Builder(context = LocalContext.current)
-                            .data("chat.countryImage")
+                            .data(if (it.city == "sa") R.drawable.southafrica
+                            else if (it.city == "us") R.drawable.us
+                            else if (it.city == "norway") R.drawable.norway
+                            else if (it.city == "canada") R.drawable.cananda else R.drawable.logo_android)
                             .crossfade(true)
                             .build(),
                         contentDescription = "chat.name",
@@ -230,7 +255,43 @@ fun AddScreen(viewModel: ConvoViewModel = androidx.lifecycle.viewmodel.compose.v
             }
         }
 
-
+        Column(modifier = Modifier
+            .padding(start = 20.dp, end = 20.dp)
+            .height(80.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .neu(
+                        lightShadowColor = appLightGray,
+                        darkShadowColor = appDarkerGray,
+                        shadowElevation = 6.dp,
+                        lightSource = LightSource.LEFT_TOP,
+                        shape = Flat(defaultCornerShape)
+                    ),
+                onClick = { "" },
+                shape = RoundedCornerShape(20),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = appDarkGray
+                )
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable{ getFilteredChats() },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .height(28.dp)
+                            .width(28.dp)
+                            .padding(top = 2.dp),
+                        contentScale = ContentScale.FillHeight,
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = "Logo"
+                    )
+                    Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Search Code", color = appWhite)
+                }
+            }
+        }
     }
 }
 

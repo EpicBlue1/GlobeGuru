@@ -374,7 +374,7 @@ fun RegisterScreen(
                             painter = painterResource(id = R.drawable.userplus),
                             contentDescription = "Logo"
                         )
-                        Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Sign Up")
+                        Text(modifier = Modifier, fontWeight = FontWeight.Bold, text = "Sign Up", color = appWhite)
                     }
                 }
             }

@@ -157,61 +157,61 @@ fun ConversationScreen(
             verticalItemSpacing = 20.dp,
             horizontalArrangement = Arrangement.spacedBy(20.dp),
         ){
-            items(allChats){chat ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .border(
-                            width = 4.dp,
-                            color = appLightGray,
-                            shape = RoundedCornerShape(5.dp)
-                        )
-                        .clickable { onNavToChat.invoke(chat.id) }
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(chat.image)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = chat.name,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(3.dp)
-                            .height(194.dp),
-                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
-                        contentScale = ContentScale.FillHeight)
-                    Box(modifier = Modifier
-                        .clip(CircleShape)
-                        .background(color = semGreen)
-                        .padding(1.dp)
-                        .width(25.dp)
-                        .height(25.dp)
-                    ) {
-                        Text(text = chat.totalMessages.toString(), modifier = Modifier
-                            .fillMaxWidth()
-                            .zIndex(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-                    }
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(chat.countryImage)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = chat.name,
-                        modifier = Modifier
-                            .align(alignment = Alignment.BottomEnd)
-                            .clip(CircleShape)
-                            .border(
-                                width = 2.dp,
-                                color = appLightGray,
-                                shape = CircleShape
-                            )
-                            .width(27.dp)
-                            .height(27.dp),
-                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
-                    )
-                }
-            }
+//            items(allChats){chat ->
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(80.dp)
+//                        .border(
+//                            width = 4.dp,
+//                            color = appLightGray,
+//                            shape = RoundedCornerShape(5.dp)
+//                        )
+//                        .clickable { onNavToChat.invoke(chat.id) }
+//                ) {
+//                    AsyncImage(
+//                        model = ImageRequest.Builder(context = LocalContext.current)
+//                            .data(chat.image)
+//                            .crossfade(true)
+//                            .build(),
+//                        contentDescription = chat.name,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(3.dp)
+//                            .height(194.dp),
+//                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+//                        contentScale = ContentScale.FillHeight)
+//                    Box(modifier = Modifier
+//                        .clip(CircleShape)
+//                        .background(color = semGreen)
+//                        .padding(1.dp)
+//                        .width(25.dp)
+//                        .height(25.dp)
+//                    ) {
+//                        Text(text = chat.totalMessages.toString(), modifier = Modifier
+//                            .fillMaxWidth()
+//                            .zIndex(1f), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+//                    }
+//                    AsyncImage(
+//                        model = ImageRequest.Builder(context = LocalContext.current)
+//                            .data(chat.countryImage)
+//                            .crossfade(true)
+//                            .build(),
+//                        contentDescription = chat.name,
+//                        modifier = Modifier
+//                            .align(alignment = Alignment.BottomEnd)
+//                            .clip(CircleShape)
+//                            .border(
+//                                width = 2.dp,
+//                                color = appLightGray,
+//                                shape = CircleShape
+//                            )
+//                            .width(27.dp)
+//                            .height(27.dp),
+//                        placeholder = painterResource(R.drawable.ic_launcher_foreground),
+//                    )
+//                }
+//            }
         }
     }
 }

@@ -101,7 +101,7 @@ class AuthViewModel(
                 }
             }
         } catch (e:Exception){
-            Log.d("Error registering: ", e.localizedMessage)
+            e.localizedMessage?.let { Log.d("Error registering: ", it) }
             e.printStackTrace()
         } finally {
             authUiState = authUiState.copy(isLoading = false)

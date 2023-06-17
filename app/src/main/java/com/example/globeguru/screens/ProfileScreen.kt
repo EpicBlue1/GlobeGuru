@@ -80,7 +80,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
 
-    val profileUiState = viewModel?.profileUiState
+    val profileUiState = viewModel.profileUiState
 
     val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 
@@ -172,7 +172,7 @@ fun ProfileScreen(
                 Image(modifier = Modifier
                     .width(35.dp)
                     .height(35.dp)
-                    .clip(CircleShape), painter = painterResource(id = if(profileUiState?.city == "southafrica") R.drawable.southafrica
+                    .clip(CircleShape), painter = painterResource(id = if(profileUiState?.city == "canada") R.drawable.cananda
                 else if (profileUiState?.city == "us") R.drawable.us
                 else if(profileUiState?.city == "norway") R.drawable.norway
                 else if (profileUiState?.city == "sa") R.drawable.southafrica
@@ -230,7 +230,6 @@ fun ProfileScreen(
                         lightSource = LightSource.LEFT_TOP,
                         shape = Pressed(RoundedCorner(10.dp)),
                     )
-
             )
 
             Row(
@@ -321,7 +320,6 @@ fun ProfileScreen(
         }
         
     }
-
 }
 
 @Preview( showSystemUi = true)

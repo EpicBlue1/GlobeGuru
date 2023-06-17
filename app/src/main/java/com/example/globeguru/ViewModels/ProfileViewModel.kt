@@ -47,18 +47,21 @@ class ProfileViewModel(
     }
 
     private fun getProfileDate()= viewModelScope.launch {
-
         if(currentUserId.isNotBlank()){
+
             fireStoreRepo.getUserProfile(currentUserId){
+                Log.d("AA Two", profileUiState.cityCode)
                 profileUiState = profileUiState.copy(
                     userName = it?.username ?: "",
                     email = it?.email ?: "",
                     city = it?.city ?: "",
+                    cityCode = it?.cityCode ?: "",
                     profileImage = Uri.parse(it?.profileImage),
                     traveler = it?.traveller.toString()
                 )
                 prevImage = it?.profileImage ?: ""
                 Log.d("AA received user info", it.toString())
+                it?.cityCode?.let { it1 -> Log.d("AA One", it1) }
             }
         }
     }
@@ -75,9 +78,10 @@ class ProfileViewModel(
                 username = profileUiState.userName,
                 email = profileUiState.email,
                 traveller = profileUiState.traveler.toBoolean(),
+                cityCode = profileUiState.cityCode,
                 city = profileUiState.city,
                 profileImage = downloadUrl)){
-                    Log.d("AAA updated user", it.toString())
+//                    Log.d("AAA updated user", it.toString())
             }
         }
     }
@@ -92,6 +96,7 @@ data class ProfileUiState(
     val userName: String = "",
     val email: String = "",
     val city: String = "",
+    val cityCode: String = "",
     val profileImage: Uri = Uri.EMPTY,
     val traveler: String = "false",
 )

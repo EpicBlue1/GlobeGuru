@@ -29,25 +29,26 @@ class FireStoreRepo {
             }
             .addOnFailureListener{
                 onSuccess.invoke(false)
-                Log.d("AAA Login failure: ", it.localizedMessage)
+                it.localizedMessage?.let { it1 -> Log.d("AAA Login failure: ", it1) }
             }
     }
 
-    suspend fun getAllChats(onSuccess: (List<Conversations>?)-> Unit){
+    suspend fun getAllChats(onSuccess: (List<User>?)-> Unit){
 
-        val conversation = arrayListOf<Conversations>()
+        val conversation = arrayListOf<User>()
 
-        userRef.orderBy("name").get()
+        userRef.orderBy("username").get()
             .addOnSuccessListener {
                 for(document in it){
                     conversation.add(
-                        Conversations(
+                        User(
                             id = document.id,
-                            name= document.data["name"].toString(),
-                            image=  document.data["image"].toString(),
-                            countryImage=  document.data["countryImage"].toString(),
-                            countryOrigin= document.data["countryOrigin"].toString(),
-                            totalMessages= document.data["totalMessages"].toString(),
+                             username = document.data["username"].toString(),
+                             email = document.data["email"].toString(),
+                             profileImage = document.data["profileImage"].toString(),
+                             city = document.data["city"].toString(),
+                             cityCode = document.data["cityCode"].toString(),
+                             traveller = document.data["traveller"] as Boolean
                         )
                     )
                 }
@@ -56,7 +57,7 @@ class FireStoreRepo {
             }
             .addOnFailureListener{
                 onSuccess(null)
-                Log.d("AAA chats failure: ", it.localizedMessage)
+                it.localizedMessage?.let { it1 -> Log.d("AAA chats failure: ", it1) }
             }.await()
     }
 
@@ -72,7 +73,11 @@ class FireStoreRepo {
                 onSuccess.invoke(true)
             }
             .addOnFailureListener{
-                Log.d("AAA there was a problem adding message", it.localizedMessage)
+                it.localizedMessage?.let { it1 ->
+                    Log.d("AAA there was a problem adding message",
+                        it1
+                    )
+                }
                 it.printStackTrace()
                 onSuccess.invoke(false)
             }.await()
@@ -84,7 +89,7 @@ class FireStoreRepo {
             .addOnSuccessListener {
                 if(it != null){
                     Log.d(ContentValues.TAG, "AA DocumentSnapShot data:" )
-                    onSuccess.invoke(it?.toObject(User::class.java))
+                    onSuccess.invoke(it.toObject(User::class.java))
                 } else {
                     Log.d(ContentValues.TAG, "AA no such data" )
                     onSuccess.invoke(null)
@@ -106,12 +111,8 @@ class FireStoreRepo {
             }
             .addOnFailureListener{
                 onSuccess.invoke(false)
-                Log.d("AAA update failure: ", it.localizedMessage)
+                it.localizedMessage?.let { it1 -> Log.d("AAA update failure: ", it1) }
                     it.printStackTrace()
             }.await()
     }
-}
-
-private fun Any.invoke(toObject: User?) {
-
 }
