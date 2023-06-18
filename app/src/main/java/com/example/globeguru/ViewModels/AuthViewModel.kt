@@ -69,7 +69,6 @@ class AuthViewModel(
                                 email = authUiState.registerEmail,
                                 cityCode = authUiState.registerCountryCode,
                                 traveller = authUiState.registerTraveler.toBoolean(),
-
                             ){
 
                                 if(it){
