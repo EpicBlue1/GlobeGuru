@@ -19,7 +19,8 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
-    private val repo: FireStoreRepo = FireStoreRepo(),authRepos: AuthRepos = AuthRepos()
+    private val repo: FireStoreRepo = FireStoreRepo(),
+    authRepos: AuthRepos = AuthRepos()
 ): ViewModel() {
 
     private val _messageList = mutableStateListOf<Message>()
@@ -65,29 +66,6 @@ class ChatViewModel(
             }
         }
     }
-
-    fun realtimeChats(){
-        val collectionRef = Firebase.firestore.collection("chatsref")
-            .document("Convs").collection("ChatsRefs")
-        chatsListener = collectionRef.addSnapshotListener{ snapshot, e ->
-            //stop if error
-            Log.d("AAA listening", snapshot?.toList().toString())
-            if (e != null){
-                Log.d("AAA listener went deaf", e.localizedMessage ?: "")
-                return@addSnapshotListener
-            }
-
-            if(snapshot != null){
-                Log.d("AAA received realtime", snapshot.toString())
-                _messageList.clear() //first clear everything
-                for (document in snapshot){
-                    Log.d("AAA received messages", document.toString())
-                }
-
-            }
-        }
-    }
-
 
     fun realTimeMessages(chatId: String){
         val collectionRef = Firebase.firestore

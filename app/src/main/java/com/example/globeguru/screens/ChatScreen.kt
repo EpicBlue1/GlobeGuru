@@ -16,11 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -32,22 +30,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.globeguru.R
 import com.example.globeguru.ViewModels.ChatViewModel
 import com.example.globeguru.ViewModels.ProfileViewModel
-import com.example.globeguru.models.Conversations
 import com.example.globeguru.models.Message
 import com.example.globeguru.repositories.AuthRepos
 import com.example.globeguru.ui.theme.GlobeGuruTheme
@@ -149,10 +148,11 @@ fun ChatScreen(modifier: Modifier = Modifier,
                 .padding(end = 10.dp, start = 10.dp)
                 , reverseLayout = true){
                 items(allMessages){ message ->
+                    Log.d("GGG", message.toString())
                     if(viewModel.currentUserId == message.fromUser){
-                        RightChat(message)
+                        RightChat(message,)
                     } else {
-                        LeftChat(message)
+                        LeftChat(message,)
                     }
                 }
             }
@@ -189,7 +189,6 @@ fun ChatScreen(modifier: Modifier = Modifier,
                     .clickable {
                         viewModel.sendNewMessage(newMessage, chatId ?: "")
                         newMessage = ""
-
                     }
                     .border(width = 2.dp, color = appNewBlue, shape = RoundedCornerShape(20))
                 ){
@@ -205,8 +204,9 @@ fun ChatScreen(modifier: Modifier = Modifier,
 
 @Composable
 fun LeftChat(message: Message){
+    Log.d("GGG", message.UserProfile)
     Row(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.Bottom) {
-        Image(modifier = Modifier
+        AsyncImage(modifier = Modifier
             .height(25.dp)
             .width(25.dp)
             .neu(
@@ -217,9 +217,13 @@ fun LeftChat(message: Message){
                 shape = Flat(RoundedCorner(100.dp))
             )
             .clip(CircleShape)
-            ,contentScale = ContentScale.Crop
-            ,painter = painterResource(id = R.drawable.profiletemp),
+            ,contentScale = ContentScale.Fit,
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(message.UserProfile)
+                .crossfade(true)
+                .build(),
             contentDescription = "ReceiveProfile")
+
         Spacer(modifier = Modifier.width(10.dp))
         Column(modifier = Modifier
             .width(290.dp)
@@ -246,6 +250,7 @@ fun RightChat(message: Message){
         .padding(top = 10.dp, bottom = 10.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End) {
         Column(modifier = Modifier
             .width(290.dp)
+
             .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 15.dp))
             .background(color = appBlue))
         {
@@ -260,7 +265,7 @@ fun RightChat(message: Message){
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
-        Image(modifier = Modifier
+        AsyncImage(modifier = Modifier
             .height(25.dp)
             .width(25.dp)
             .neu(
@@ -271,8 +276,11 @@ fun RightChat(message: Message){
                 shape = Flat(RoundedCorner(100.dp))
             )
             .clip(CircleShape)
-            ,contentScale = ContentScale.Crop
-            ,painter = painterResource(id = R.drawable.profiletemp),
+            ,contentScale = ContentScale.Crop,
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(message.UserProfile)
+                .crossfade(true)
+                .build(),
             contentDescription = "ReceiveProfile")
     }
 }
