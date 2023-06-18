@@ -33,11 +33,6 @@ class ConvoViewModel(
     private val _ownchatList = mutableStateListOf<User>()
     val ownchatList: List<User> = _ownchatList
 
-    //get convos on initialization
-//    init {
-//        getOwnChats(false, "uOhyKJBJetPzzVVE3VrfOmNHb6w1")
-//    }
-
     fun getChats(filter: String) = viewModelScope.launch {
         repo.getAllChats() { data ->
             if (data != null) {

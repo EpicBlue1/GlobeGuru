@@ -62,6 +62,8 @@ import com.gandiva.neumorphic.shape.CornerShape
 import com.gandiva.neumorphic.shape.Flat
 import com.gandiva.neumorphic.shape.Pressed
 import com.gandiva.neumorphic.shape.RoundedCorner
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 val defaultCornerShape: CornerShape = RoundedCorner(12.dp)
 
@@ -73,13 +75,21 @@ fun ChatScreen(modifier: Modifier = Modifier,
                navBack:()-> Unit,
                viewModel: ChatViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
                ProfileViewModel: ProfileViewModel = androidx.lifecycle.viewmodel.compose.viewModel())
-
     {
 
         val currentUserId = authRepos.getUserId()
         Log.d("ZZZ currentUser and current chat", currentUserId + " " + chatId)
 
+
+        val db =Firebase.firestore
         var newMessage: String by remember {
+            mutableStateOf("")
+        }
+        var profileName: String by remember {
+            mutableStateOf("")
+        }
+
+        var profileImage: String by remember {
             mutableStateOf("")
         }
 
@@ -89,6 +99,16 @@ fun ChatScreen(modifier: Modifier = Modifier,
             if(!isChatIdBlank){
                 Log.d("AA Receive Messages", "Umm")
                 viewModel.realTimeMessages(chatId ?: "")
+
+                db.collection("users").get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot) {
+                            if (document.id == chatId){
+                                profileName = document.data["username"].toString()
+                                profileImage = document.data["profileImage"].toString()
+                            }
+                        }
+                    }
             } else {
                 Log.d("AAA chat id error", chatId.toString())
             }
@@ -126,9 +146,9 @@ fun ChatScreen(modifier: Modifier = Modifier,
                         contentDescription = "back")
                 }
 
-                Text(text = chatId ?: "", modifier = Modifier, style = MaterialTheme.typography.titleMedium, color = appWhite)
+                Text(text = profileName ?: "", modifier = Modifier, style = MaterialTheme.typography.titleMedium, color = appWhite)
 
-                Image(modifier = Modifier
+                AsyncImage(modifier = Modifier
                     .height(50.dp)
                     .width(50.dp)
                     .neu(
@@ -140,7 +160,10 @@ fun ChatScreen(modifier: Modifier = Modifier,
                     )
                     .clip(CircleShape)
                     ,contentScale = ContentScale.Crop
-                    ,painter = painterResource(id = R.drawable.profiletemp),
+                    ,model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(profileImage)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = "add icon")
             }
             LazyColumn(modifier = Modifier
@@ -150,9 +173,9 @@ fun ChatScreen(modifier: Modifier = Modifier,
                 items(allMessages){ message ->
                     Log.d("GGG", message.toString())
                     if(viewModel.currentUserId == message.fromUser){
-                        RightChat(message,)
+                        RightChat(message)
                     } else {
-                        LeftChat(message,)
+                        LeftChat(message)
                     }
                 }
             }
