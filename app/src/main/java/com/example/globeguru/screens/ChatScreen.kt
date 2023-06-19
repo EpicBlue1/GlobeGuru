@@ -114,7 +114,7 @@ fun ChatScreen(modifier: Modifier = Modifier,
             }
         }
 
-        val allMessages = viewModel?.messageList ?: listOf<Message>()
+        val allMessages = viewModel.messageList ?: listOf<Message>()
         Log.d("LOL", allMessages.toList().toString())
 
 

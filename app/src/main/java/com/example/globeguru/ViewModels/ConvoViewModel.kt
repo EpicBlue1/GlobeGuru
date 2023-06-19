@@ -66,7 +66,7 @@ class ConvoViewModel(
             db.collection("users").get()
                 .addOnSuccessListener { querySnapshot ->
                     for (document in querySnapshot) {
-                        if (document.id == chatsRefId && trav) {
+                        if (document.id == userRefId && trav) {
                             val id = document.id
                             val username = document.data["username"].toString()
                             val email = document.data["email"].toString()
@@ -88,7 +88,7 @@ class ConvoViewModel(
                             )
                             conversation.add(user)
                             _ownchatList.addAll(conversation)
-                        } else if (document.id == userRefId && !trav) {
+                        } else if (document.id == chatsRefId && !trav) {
                             val id = document.id
                             val username = document.data["username"].toString()
                             val email = document.data["email"].toString()
